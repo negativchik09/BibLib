@@ -6,6 +6,14 @@
 
     <ItemGroup>
       <Folder Include="wwwroot" />
+      <Folder Include="Areas\Admin\Controllers" />
+      <Folder Include="Areas\Admin\Views" />
+      <Folder Include="Controllers" />
+      <Folder Include="Domain" />
+      <Folder Include="Models\ViewComponents" />
+      <Folder Include="Properties" />
+      <Folder Include="Service" />
+      <Folder Include="Views\Shared" />
     </ItemGroup>
 
 </Project>
