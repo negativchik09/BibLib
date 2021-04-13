@@ -3636,5 +3636,15 @@ input, select, textarea {
 			#menu > * {
 				padding: 1.5em;
 			}
-
 		}
+
+.preloader {
+	position: fixed;
+	left: 0;
+	top: 3.25em;
+	right: 0;
+	bottom: 0;
+	background: #ffffff;
+	z-index: 10003;
+	height: calc(100vh - 3.25em);
+}
