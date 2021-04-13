@@ -1,9 +1,9 @@
 <!-- Header -->
 <header id="header">
-    <a href="index.html">
+    <a asp-action="Index" asp-controller="Home">
         <img src="~/img/logo.png" />
     </a>
-    <h1><a href="index.html">BibLib</a></h1>
+    <h1><a asp-action="Index" asp-controller="Home">BibLib</a></h1>
     <nav class="links">
         <ul>
             <li>
@@ -14,12 +14,12 @@
             @if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 <li><a href="#">Войти в аккант</a></li>
-                <li><a href="#">Зарегистрироваться</a></li>
+                <li><a asp-action="Registration" asp-controller="Account">Зарегистрироваться</a></li>
             }
             else
             {
                 <li><a href="#">Войти в аккаунт</a></li>
-                <li><a href="#">Зарегистрироваться</a></li>
+                <li><a asp-action="Registration" asp-controller="Account">Зарегистрироваться</a></li>
             }
         </ul>
     </nav>
