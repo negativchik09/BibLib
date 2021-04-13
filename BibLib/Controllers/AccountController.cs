@@ -12,7 +12,7 @@ namespace BibLib.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-
+        
         public AccountController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<IdentityUser> signInManager)
         {
             _userManager = userManager;
@@ -25,45 +25,41 @@ namespace BibLib.Controllers
         {
             return View();
         }
-        /*
-[HttpPost]
-public async Task<IActionResult> Registration(RegistrationViewModel model, string returnUrl)
-{
-
- if (ModelState.IsValid)
-{
-    IdentityUser user = await _userManager.FindByEmailAsync(model.Email);
-    if (user == default)
-    {
-        user = new IdentityUser
+        [HttpPost]
+        public async Task<IActionResult> Registration(RegistrationViewModel model, string returnUrl)
         {
-            Email = model.Email,
-            UserName = model.Email,
-            PhoneNumber = model.Phone,
-            PhoneNumberConfirmed = true,
-            // Email confirmation don`t work, because i haven`t money for rent a smtp server.
-            // If smtp will work switch this bool to false
-            EmailConfirmed = true
-        };
-        IdentityResult result = await _userManager.CreateAsync(user, model.Password);
-        if (result.Succeeded)
-        {
-            await _signInManager.SignInAsync(user, false);
-            await _userManager.AddToRoleAsync(user, "user");
-            await _ctx.Carts.AddAsync(new CartModel
+            if (ModelState.IsValid)
             {
-                User = user,
-                CartItems = new List<CartItemModel>(),
-            });
-            await _ctx.SaveChangesAsync();
-            return View("CheckEmail", returnUrl ?? "/");
+                IdentityUser identityUser = await _userManager.FindByEmailAsync(model.Email);
+                if (identityUser == default) 
+                { 
+                    identityUser = new IdentityUser
+                    {
+                        Email = model.Email,
+                        UserName = model.Email,
+                        EmailConfirmed = true
+                    };
+                    IdentityResult result = await _userManager.CreateAsync(identityUser, model.Password);
+                    if (result.Succeeded)
+                    {
+                        IdentityRole admin = new IdentityRole();
+                        IdentityRole premium = new IdentityRole();
+                        IdentityRole user = new IdentityRole();
+                        _roleManager.CreateAsync(admin);
+                        _roleManager.CreateAsync(premium);
+                        _roleManager.CreateAsync(user);
+                        await _signInManager.SignInAsync(identityUser, false);
+                        await _userManager.AddToRoleAsync(identityUser, "user");
+                    }
+                }
+                ModelState.AddModelError(nameof(RegistrationViewModel.Email), "Пользователь с такой почтой уже существует");
+            }
+            return View("Registration", model);
         }
-    }
-    ModelState.AddModelError(nameof(RegistrationViewModel.Email), "Пользователь с такой почтой уже существует");
-}
-return View("Registration", model);
 
-}
-*/
+        public IActionResult Login(string returnUrl)
+        {
+            return null;
+        }
     }
 }
