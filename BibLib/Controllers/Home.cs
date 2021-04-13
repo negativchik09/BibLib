@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BibLib.Controllers
 {
-    public class Home
+    public class HomeController : Controller
     {
         public IActionResult Index()
         {
-            return View("Index");
+            return View();
         }
     }
 }

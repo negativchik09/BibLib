@@ -9,6 +9,7 @@
 			<div id="wrapper">
                 @await Html.PartialAsync("HeaderPartial")
 				@await Html.PartialAsync("MenuPartial")
+                @RenderBody()
                 @await Html.PartialAsync("FooterPartial")
 			</div>
         @await Html.PartialAsync("ScriptsPartial")
