@@ -1,16 +1,20 @@
 <!DOCTYPE HTML>
 <html>
-@* Комментарий *@
 	<head>
 		@await Html.PartialAsync("MetatagsPartial")
         @await Html.PartialAsync("CssPartial")
 	</head>
 	<body class="is-preload">
 		<!-- Wrapper -->
-			<div id="wrapper">
-                @await Html.PartialAsync("HeaderPartial")
-				@await Html.PartialAsync("MenuPartial")
-                @RenderBody()
+			<div>
+               
+                <div id="container">
+                    @await Html.PartialAsync("HeaderPartial")
+                    <div id="main">
+                        @await Html.PartialAsync("MenuPartial")
+                        @RenderBody()
+                    </div>
+                </div>
                 @await Html.PartialAsync("FooterPartial")
 			</div>
         @await Html.PartialAsync("ScriptsPartial")

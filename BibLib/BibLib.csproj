@@ -10,7 +10,6 @@
       <Folder Include="Areas\Admin\Views" />
       <Folder Include="Models\ViewComponents" />
       <Folder Include="Properties" />
-      <Folder Include="Views\Shared" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,6 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibLib", "BibLib\BibLib.csproj", "{88591175-800A-4BDD-A071-D9F8CF5557DC}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31005.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BibLib", "BibLib\BibLib.csproj", "{88591175-800A-4BDD-A071-D9F8CF5557DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +15,11 @@ Global
 		{88591175-800A-4BDD-A071-D9F8CF5557DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88591175-800A-4BDD-A071-D9F8CF5557DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88591175-800A-4BDD-A071-D9F8CF5557DC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {35A3C854-5A64-4170-BB40-2064EFB920EB}
 	EndGlobalSection
 EndGlobal
