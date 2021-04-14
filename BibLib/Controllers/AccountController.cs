@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BibLib.Domain;
 using BibLib.Domain.Entities;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BibLib.Controllers
 {
@@ -43,6 +45,7 @@ namespace BibLib.Controllers
             };
             return View(model);
         }
+        
         [HttpPost]
         public async Task<IActionResult> Registration(RegistrationViewModel model, string returnUrl)
         {
@@ -138,15 +141,21 @@ namespace BibLib.Controllers
         {
             if (ModelState.IsValid)
             {
-                IdentityUser user = await _userManager.FindByEmailAsync(model.Email);                
+                IdentityUser user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    string question = (from DB_question in _ctx.SecretQuestions
+                        where DB_question.User == user
+                        select DB_question.Question).Single();
+                    return SecurityCheck(question);
+                }
             }
             return View("ForgotPassword", model);
         }
 
-        [HttpGet]
-        public IActionResult SecurityCheck()
+        private IActionResult SecurityCheck(string question)
         {
-            return View();
+            return View("SecurityCheck", new SecurityCheckViewModel{Question = question});
         }
         
         [Authorize]
@@ -155,6 +164,5 @@ namespace BibLib.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
-        
     }
 }
