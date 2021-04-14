@@ -15,5 +15,7 @@ namespace BibLib.Domain
         public DbSet<Author> Authors { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<SecretQuestion> SecretQuestions { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
+        public DbSet<Tag> Tags { get; set; }
     }
 }
