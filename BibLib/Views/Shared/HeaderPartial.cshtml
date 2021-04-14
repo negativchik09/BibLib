@@ -13,8 +13,9 @@
             </li>
             @if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                <li><a href="#">Войти в аккант</a></li>
-                <li><a asp-action="Registration" asp-controller="Account">Зарегистрироваться</a></li>
+                <li><a asp-action="Profile" asp-controller="Profile">Профиль</a></li>
+                <li><a asp-action="Favourites" asp-controller="Profile">Закладки</a></li>
+                <li><a asp-action="Logout" asp-controller="Account">Выйти из аккаунта</a></li>
             }
             else
             {
