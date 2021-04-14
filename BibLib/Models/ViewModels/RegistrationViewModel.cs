@@ -23,11 +23,15 @@ namespace BibLib.Models.ViewModels
         [Display(Name = "Подтвердите пароль")]
         [Compare("Password", ErrorMessage = "Пароли не совпадают")]
         public string ConfirmPassword { get; set; }
-        
+
+        [Required(ErrorMessage = "Обязательное поле")]
+        [Display(Name = "Секретный вопрос")]
         public string SecretQuestion { get; set; }
         
         public List<string> ListOfSecretQuestions { get; set; }
-        
+
+        [Required(ErrorMessage = "Обязательное поле")]
+        [Display(Name = "Ответ на секреный вопрос")]
         public string Answer { get; set; }
     }
 }
