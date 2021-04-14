@@ -624,6 +624,10 @@ input, select, textarea {
 					width: 33.33333%;
 				}
 
+				.col-4 .off-3 {
+					vertical-align: middle;
+				}
+
 				.row > .off-4-xlarge {
 					margin-left: 33.33333%;
 				}
@@ -1892,7 +1896,10 @@ input, select, textarea {
 		text-transform: uppercase;
 		white-space: nowrap;
 	}
-
+		.col-2 .button {
+			width: 100%;
+		}
+		
 		input[type="submit"]:hover,
 		input[type="reset"]:hover,
 		input[type="button"]:hover,
@@ -2168,12 +2175,12 @@ input, select, textarea {
 
 		input[type="checkbox"] + label,
 		input[type="radio"] + label {
-			text-decoration: none;
-			color: #646464;
+			/*text-decoration: none;*/
+			color: #3c3b3b;
 			cursor: pointer;
 			display: inline-block;
-			font-size: 1em;
-			font-weight: 400;
+			/*font-size: 1em;
+			font-weight: 400;*/
 			padding-left: 2.4em;
 			padding-right: 0.75em;
 			position: relative;
@@ -2181,7 +2188,7 @@ input, select, textarea {
 
 			input[type="checkbox"] + label:before,
 			input[type="radio"] + label:before {
-				-moz-osx-font-smoothing: grayscale;
+				/*-moz-osx-font-smoothing: grayscale;*/
 				-webkit-font-smoothing: antialiased;
 				display: inline-block;
 				font-style: normal;
@@ -3118,6 +3125,7 @@ input, select, textarea {
 	body {
 		padding-top: 3.5em;
 	}
+
 
 	#header {
 		display: -moz-flex;

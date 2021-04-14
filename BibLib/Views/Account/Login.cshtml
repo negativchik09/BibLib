@@ -1,1 +1,29 @@
 ﻿@model LoginViewModel
+<section class="box">
+    <form asp-action="Registration" asp-controller="Account" method="post">
+        <div class="container col-6-medium">
+            <div class="row gtr-uniform">
+                <div class="col-3 off-3">
+                    <label asp-for="Email" class="align-center"></label>
+                    <input asp-for="Email" class="align-center" />
+                    <span asp-validation-for="Email" class="align-center"></span>
+                </div>
+                <div class="col-3">
+                    <label asp-for="Password" class="align-center"></label>
+                    <input asp-for="Password" type="password" class="align-center" />
+                    <span asp-validation-for="Password" class="align-center"></span>
+                </div>
+                <div class="col-4 off-3 ">
+                    <input type="checkbox" asp-for="RememberMe" class="align-center" />
+                    <label asp-for="RememberMe" class="align-center" style="user-select:none"></label>
+                </div>
+                <div class="col-2">
+                    <input type="button" class="button" value="Забыл пароль"/>
+                </div>
+                <div class="col-4 off-4 aln-center">
+                    <input type="submit" value="Авторизоваться" class="button special fit" />
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
