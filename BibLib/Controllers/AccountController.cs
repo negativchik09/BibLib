@@ -25,7 +25,7 @@ namespace BibLib.Controllers
         }
 
         [HttpGet]
-        public IActionResult Registration(string returnUrl)
+        public IActionResult Registration()
         {
             if (User.Identity != null)
             {
@@ -34,20 +34,13 @@ namespace BibLib.Controllers
                     return RedirectToAction("Profile", "Profile");
                 }
             }
-            RegistrationViewModel model = new RegistrationViewModel
-            {
-                ListOfSecretQuestions = new List<string>
-                {
-                    "Девичья фамилия матери",
-                    "Кличка первого питомца",
-                    "Марка первой машины"
-                }
-            };
+
+            RegistrationViewModel model = new RegistrationViewModel();
             return View(model);
         }
         
         [HttpPost]
-        public async Task<IActionResult> Registration(RegistrationViewModel model, string returnUrl)
+        public async Task<IActionResult> Registration(RegistrationViewModel model)
         {
             if (User.Identity != null)
             {
@@ -79,7 +72,7 @@ namespace BibLib.Controllers
                             Question = model.SecretQuestion
                         });
                         await _ctx.SaveChangesAsync();
-                        return Redirect(returnUrl);
+                        return RedirectToAction("Index", "Home");
                     }
                     return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                 }
@@ -120,6 +113,10 @@ namespace BibLib.Controllers
                     if (result.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, model.RememberMe);
+                        if (returnUrl == null)
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
                         return Redirect(returnUrl);
                     }
                     ModelState.AddModelError(nameof(LoginViewModel.Password), "Неверный пароль");
@@ -144,19 +141,31 @@ namespace BibLib.Controllers
                 IdentityUser user = await _userManager.FindByEmailAsync(model.Email);
                 if (user != null)
                 {
-                    string question = (from DB_question in _ctx.SecretQuestions
+                    string question = (from DB_question in _ctx.SecretQuestions.AsNoTracking()
                         where DB_question.User == user
                         select DB_question.Question).Single();
                     return SecurityCheck(question);
                 }
+                ModelState.AddModelError(nameof(model.Email), "Нет пользователя с такой почтой");
             }
             return View("ForgotPassword", model);
         }
-
-        private IActionResult SecurityCheck(string question)
+        
+        [NonAction]
+        public IActionResult SecurityCheck(string question)
         {
             return View("SecurityCheck", new SecurityCheckViewModel{Question = question});
         }
+/*
+        [HttpPost]
+        public IActionResult SecurityCheck(SecurityCheckViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                
+            }
+        }
+        */
         
         [Authorize]
         public async Task<IActionResult> Logout()

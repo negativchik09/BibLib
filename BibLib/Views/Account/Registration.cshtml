@@ -25,7 +25,7 @@
                 </div>
                 <div class="col-3 off-3 ">
                     <label asp-for="SecretQuestion" class="align-center"></label>
-                    <select asp-for="SecretQuestion" asp-items="ViewBag.ListOfSecretQuestion"></select>
+                    <select asp-for="SecretQuestion" asp-items="new SelectList(Model.ListOfSecretQuestions)"></select>
                     <span asp-validation-for="SecretQuestion" class="align-center"></span>
                 </div>
                 <div class="col-3">

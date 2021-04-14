@@ -4,6 +4,7 @@ namespace BibLib.Models.ViewModels
 {
     public class SecurityCheckViewModel
     {
+        public string Email { get; set; }
         [Display(Name = "Секретный вопрос")]
         public string Question { get; set; }
         [Required(ErrorMessage = "Обязательное поле")]

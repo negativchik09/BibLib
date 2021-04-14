@@ -11,5 +11,10 @@ namespace BibLib.Controllers
         {
             return View();
         }
+
+        public IActionResult Favourites()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

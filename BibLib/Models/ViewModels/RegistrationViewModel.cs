@@ -33,5 +33,15 @@ namespace BibLib.Models.ViewModels
         [Required(ErrorMessage = "Обязательное поле")]
         [Display(Name = "Ответ на секреный вопрос")]
         public string Answer { get; set; }
+
+        public RegistrationViewModel()
+        {
+            ListOfSecretQuestions = new List<string>
+            {
+                "Девичья фамилия матери",
+                "Кличка первого питомца",
+                "Марка первой машины"
+            };
+        }
     }
 }
