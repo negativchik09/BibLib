@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using BibLib.Domain;
+using BibLib.Domain.Entities;
 using BibLib.Models.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,12 +15,13 @@ namespace BibLib.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        
-        public AccountController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<IdentityUser> signInManager)
+        private readonly AppDbContext _ctx;
+        public AccountController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<IdentityUser> signInManager, AppDbContext ctx)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
+            _ctx = ctx;
         }
 
         [HttpGet]
@@ -31,7 +35,7 @@ namespace BibLib.Controllers
             if (ModelState.IsValid)
             {
                 IdentityUser identityUser = await _userManager.FindByEmailAsync(model.Email);
-                if (identityUser == default) 
+                if (identityUser == default)
                 { 
                     identityUser = new IdentityUser
                     {
@@ -44,7 +48,16 @@ namespace BibLib.Controllers
                     {
                         await _signInManager.SignInAsync(identityUser, true);
                         await _userManager.AddToRoleAsync(identityUser, "user");
+                        await _ctx.SecretQuestions.AddAsync(new SecretQuestion
+                        {
+                            User = identityUser,
+                            Answer = model.Answer,
+                            Question = model.SecretQuestion
+                        });
+                        await _ctx.SaveChangesAsync();
+                        return Redirect(returnUrl);
                     }
+                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                 }
                 ModelState.AddModelError(nameof(RegistrationViewModel.Email), "Пользователь с такой почтой уже существует");
             }
@@ -53,7 +66,7 @@ namespace BibLib.Controllers
 
         public IActionResult Login(string returnUrl)
         {
-            return null;
+            return View();
         }
     }
 }
