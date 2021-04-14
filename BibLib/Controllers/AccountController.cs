@@ -42,13 +42,7 @@ namespace BibLib.Controllers
                     IdentityResult result = await _userManager.CreateAsync(identityUser, model.Password);
                     if (result.Succeeded)
                     {
-                        IdentityRole admin = new IdentityRole();
-                        IdentityRole premium = new IdentityRole();
-                        IdentityRole user = new IdentityRole();
-                        _roleManager.CreateAsync(admin);
-                        _roleManager.CreateAsync(premium);
-                        _roleManager.CreateAsync(user);
-                        await _signInManager.SignInAsync(identityUser, false);
+                        await _signInManager.SignInAsync(identityUser, true);
                         await _userManager.AddToRoleAsync(identityUser, "user");
                     }
                 }

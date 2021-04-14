@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BibLib.Models.ViewModels
 {
@@ -22,5 +23,11 @@ namespace BibLib.Models.ViewModels
         [Display(Name = "Подтвердите пароль")]
         [Compare("Password", ErrorMessage = "Пароли не совпадают")]
         public string ConfirmPassword { get; set; }
+        
+        public string SecretQuestion { get; set; }
+        
+        public List<string> ListOfSecretQuestions { get; set; }
+        
+        public string Answer { get; set; }
     }
 }
