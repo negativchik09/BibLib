@@ -64,7 +64,6 @@ namespace BibLib.Controllers
                     if (result.Succeeded)
                     {
                         await _signInManager.SignInAsync(identityUser, true);
-                        await _userManager.AddToRoleAsync(identityUser, "user");
                         await _ctx.SecretQuestions.AddAsync(new SecretQuestion
                         {
                             User = identityUser,
@@ -156,22 +155,50 @@ namespace BibLib.Controllers
         {
             return View("SecurityCheck", new SecurityCheckViewModel{Question = question});
         }
-/*
+        
         [HttpPost]
-        public IActionResult SecurityCheck(SecurityCheckViewModel model)
+        public async Task<IActionResult> SecurityCheck(SecurityCheckViewModel model)
         {
             if (ModelState.IsValid)
             {
-                
+                IdentityUser user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var questionAnswer = await _ctx.SecretQuestions.AsNoTracking().FirstOrDefaultAsync();
+                    if (questionAnswer?.Answer == model.Answer)
+                    {
+                        return ChangePassword(model.Email);
+                    }
+                }
+                ModelState.AddModelError(nameof(model.Email), "Пользователь с такой почтой не найден");
             }
+            return View("SecurityCheck", model);
         }
-        */
         
         [Authorize]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+        [NonAction]
+        public IActionResult ChangePassword(string email)
+        {
+            return View("ChangePassword", new ChangePasswordViewModel {Email = email});
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                IdentityUser user = await _userManager.FindByEmailAsync(model.Email);
+                await _userManager.RemovePasswordAsync(user);
+                await _userManager.AddPasswordAsync(user, model.Password);
+                return RedirectToAction("Login", "Account");
+            }
+            return View("ChangePassword", model);
         }
     }
 }

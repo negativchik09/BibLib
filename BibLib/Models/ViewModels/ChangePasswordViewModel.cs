@@ -2,8 +2,9 @@
 
 namespace BibLib.Models.ViewModels
 {
-    public class ChangePasswordFormViewModel
+    public class ChangePasswordViewModel
     {
+        public string Email { get; set; }
         [Required(ErrorMessage = "Обязательное поле")]
         [Display(Name = "Пароль")]
         public string Password { get; set; }
