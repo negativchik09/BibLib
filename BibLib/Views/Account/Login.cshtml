@@ -18,7 +18,7 @@
                     <label asp-for="RememberMe" class="align-center" style="user-select:none"></label>
                 </div>
                 <div class="col-2">
-                    <input type="button" class="button" value="Забыл пароль"/>
+                    <a asp-action="ForgotPassword" asp-controller="Account">Забыл пароль</a>
                 </div>
                 <div class="col-4 off-4 aln-center">
                     <input type="submit" value="Авторизоваться" class="button special fit" />
