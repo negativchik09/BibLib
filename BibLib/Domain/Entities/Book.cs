@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 
 namespace BibLib.Domain.Entities
 {
@@ -16,5 +17,6 @@ namespace BibLib.Domain.Entities
         public string Text { get; set; }
         public int Rating { get; set; }
         public int Popularity { get; set; }
+        public string Annotation { get; set; }
     }
 }

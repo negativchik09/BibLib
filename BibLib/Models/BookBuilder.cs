@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using BibLib.Domain;
 using BibLib.Domain.Entities;
@@ -31,7 +32,7 @@ namespace BibLib.Models
                 Text = null,
                 Title = null,
             };
-            _guid = new Guid().ToString();
+            _guid = Guid.NewGuid().ToString();
             _ctx = ctx;
         }
 
@@ -103,10 +104,11 @@ namespace BibLib.Models
                 return;
             }
             string path =
-                $"{rootPath}/img/{_guid}{Path.GetExtension(file.Name)}";
+                @$"{rootPath}/wwwroot/img/{_guid}{Path.GetExtension(ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName?.Trim('"'))}";
             await using (var stream = File.Create(path))
             {
                 await file.CopyToAsync(stream);
+                await stream.FlushAsync();
             }
             _book.Image = $"~/img/{_guid}{Path.GetExtension(file.Name)}";
         }
@@ -115,22 +117,34 @@ namespace BibLib.Models
         {
             StreamReader reader = new StreamReader(file.OpenReadStream());
             string text = await reader.ReadToEndAsync();
-            await File.WriteAllTextAsync($"{rootPath}/img/{_guid}/origin.txt", text);
+            Directory.CreateDirectory($"{rootPath}/wwwroot/texts/{_guid}/");
+            await File.WriteAllTextAsync($"{rootPath}/wwwroot/texts/{_guid}/origin.txt", text);
             reader.Close();
-            List<string> pages = (await BookSlicerAsync(text)).ToList();
-            
+            List<string> pages = BookSlicer(text).ToList();
+            Console.WriteLine("Файлы нарезаны");
             for (int i = 1; i < pages.Count + 1; i++)
             {
-                await File.WriteAllTextAsync($"{rootPath}/img/{_guid}/{i}.txt", pages[i]);
+                await using (var stream = File.Create($"{rootPath}/wwwroot/texts/{_guid}/{i}.txt"))
+                {
+                    StreamWriter streamWriter = new StreamWriter(stream);
+                    streamWriter.Write(pages[i-1]);
+                    streamWriter.Close();
+                }
+                Console.WriteLine($"Файл {i} записан");
             }
-
+            Console.WriteLine("Все файлы перезаписаны");
             _book.NumberOfPages = pages.Count;
-            _book.Text = $"~/img/{_guid}/";
+            _book.Text = $"~/texts/{_guid}/";
         }
 
         public void SetSeries(string series)
         {
             _book.Series = series;
+        }
+
+        public void SetAnnotation(string description)
+        {
+            _book.Annotation = description;
         }
 
         public Book GetBook()
@@ -207,11 +221,11 @@ namespace BibLib.Models
             int index;
             for (int i = 0; i < buffer.Length; i++)
             {
-                buffer[i] = $"{buffer[i][0].ToString().ToUpper()}{buffer[i][1..^1].ToString().ToLower()}";
+                buffer[i] = $"{buffer[i][0].ToString().ToUpper()}{buffer[i][1..].ToString().ToLower()}";
                 index = buffer[i].IndexOf('-');
                 if (index + 2 < buffer[i].Length && index != -1)
                 {
-                    buffer[i] = $"{buffer[i][0..(index + 1)]}{buffer[i][index + 1].ToString().ToUpper()}{buffer[i][(index + 2)..^1]}";
+                    buffer[i] = $"{buffer[i][0..(index + 1)]}{buffer[i][index + 1].ToString().ToUpper()}{buffer[i][(index + 2)..]}";
                 }
             }
 

@@ -1,10 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using BibLib.Domain;
 using BibLib.Domain.Entities;
 using BibLib.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using BibLib.Models.ViewModels;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 
 // txt fb2 rtf epub
@@ -51,6 +54,7 @@ namespace BibLib.Controllers
                     model.Genre = model.Genre.Trim();
                     await builder.SetGenre(model.Genre);
                     builder.SetSeries(model.Series);
+                    builder.SetAnnotation(model.Annotation);
                     if (model.Image != null)
                     {
                         if (model.Image.Length == 0)
@@ -70,9 +74,20 @@ namespace BibLib.Controllers
                         return View("CreateOrEdit", model);
                     }
                     await builder.SetTextAsync(model.Text, _host.ContentRootPath);
+                    
                     Book book = builder.GetBook();
+                    Console.WriteLine("Объект книги создан");
                     await _ctx.Books.AddAsync(book);
-                    _ctx.SaveChanges();
+                    foreach (var author in book.Author)
+                    {
+                        _ctx.Entry(author).State = EntityState.Unchanged;
+                    }
+                    foreach (var genre in book.Genre)
+                    {
+                        _ctx.Entry(genre).State = EntityState.Unchanged;
+                    }
+                    await _ctx.SaveChangesAsync();
+                    Console.WriteLine("Запись в БД создана");
                     return Redirect($"~/Book/Info/{book.Id}");
                 }
             }
