@@ -4,49 +4,87 @@
         <div class="container col-6-medium">
             <div class="row gtr-uniform">
                 <input type="hidden" asp-for="Id" name="Id">
-                <div class="col-3 off-3">
-                    <img src="@Model.Image" />
+                <div class="col-2 off-3">
+                    <img src="@Model.Image" style="object-fit: fill; height:100%; width:-webkit-fill-available"/>
                 </div>
-                <div class="col-3">
-                    <label asp-for="Title" class="align-center"></label>:@Model.Title
-                    <label asp-for="Author" class="align-center">: @Model.Author</label>
-                    <label asp-for="Genre" class="align-center">: @Model.Genre</label>
-                    <label asp-for="Series" class="align-center">: @Model.Series</label>
-                    <label asp-for="NumberOfPages" class="align-center">: @Model.NumberOfPages</label>
-                    <div id="RatingButtonContainer">
-                        <div class="col-6">
-                            @if (User.IsInRole("librarian") || User.IsInRole("admin"))
-                            {
-                                <a asp-action="Edit" asp-controller="Book" asp-route-id="@Model.Id">Изменить</a>
-                            }
-                        </div>
-                        <div class="col-6">
-                            @if (User.IsInRole("librarian") || User.IsInRole("admin"))
-                            {
-                                <a asp-action="Delete" asp-controller="Book" asp-route-id="@Model.Id">Удалить</a>
-                            }
-                        </div>
-                        <div class="col-2">
-                            @if (User.Identity != null && User.Identity.IsAuthenticated)
-                            {
-                                <input type="button" class="button" value="-"/>
-                            }
-                        </div>
-                        <div class="col-8"><label asp-for="Rating" class="align-center">: @Model.Rating</label></div>
-                        <div class="col-2">
-                            @if (User.Identity != null && User.Identity.IsAuthenticated)
-                            {
-                                <input type="button" class="button" value="+" />
-                            }
-                        </div>
+                <div class="col-4">
+                    <table border="0">
+                        <tr><td><label asp-for="Title"></label></td><td>@Model.Title</td></tr>
+                        <tr><td><label asp-for="Author"></label></td><td>@Model.Author</td></tr>
+                        <tr><td><label asp-for="Genre"></label></td><td>@Model.Genre</td></tr>
+                        <tr><td><label asp-for="Series"></label></td><td>@Model.Series</td></tr>
+                        <tr><td><label asp-for="NumberOfPages"></label></td><td>@Model.NumberOfPages</td></tr>
+                    </table>
+                    <table border="0" style="margin:0;">
+                        <tr>
+                            <td colspan="3" class="align-center" style="width:50%; padding:0;">
+                                @if (User.IsInRole("librarian") || User.IsInRole("admin"))
+                                {
+                                    <a asp-action="Edit" asp-controller="Book" asp-route-id="@Model.Id">Изменить</a>
+                                }
+                            </td>
+                            <td colspan="3" class="align-center" style="width:50%; padding:0;">
+                                @if (User.IsInRole("librarian") || User.IsInRole("admin"))
+                                {
+                                    <a asp-action="Delete" asp-controller="Book" asp-route-id="@Model.Id">Удалить</a>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="1" class="align-center" style="width:20%;">
+                                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                                {
+                                    <input type="button" class="button align-center" value="-" />
+                                }
+                            </td>
+                            <td colspan="4" class="align-center" style="width:60%;">
+                                <label asp-for="Rating" style="display:inline;"></label>@Model.Rating
+                            </td>
+                            <td colspan="1" class="align-center" style="width:20%;">
+                                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                                {
+                                    <input type="button" class="button align-center" value="+" />
+                                }
+                            </td>
+                        </tr>
+                    </table>
+                    @*<div class="col-6">
+                        @if (User.IsInRole("librarian") || User.IsInRole("admin"))
+                        {
+                            <a asp-action="Edit" asp-controller="Book" asp-route-id="@Model.Id">Изменить</a>
+                        }
                     </div>
-                    <div class="col-6 off-3 ">
-                        <label asp-for="Annotation" class="align-center"></label>
-                        <textarea readonly="readonly">@Model.Annotation</textarea>
+                    <div class="col-6">
+                        @if (User.IsInRole("librarian") || User.IsInRole("admin"))
+                        {
+                            <a asp-action="Delete" asp-controller="Book" asp-route-id="@Model.Id">Удалить</a>
+                        }
                     </div>
-                    <div class="col-6 off-3">
-                        <a asp-action="Read" asp-controller="Book">Читать</a>
+                    <div class="col-2">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <input type="button" class="button" value="-" />
+                        }
                     </div>
+                    <div class="col-8 align-center">
+                        <table border="0">
+                            <tr><td><label asp-for="Rating"></label>@Model.Rating</td></tr>
+                        </table>
+                    </div>
+                    <div class="col-2">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <input type="button" class="button" value="+" />
+                        }
+                    </div>*@
+                </div>
+                <div class="col-6 off-3 ">
+                    <label asp-for="Annotation" class="align-center"></label>
+                    @*<textarea readonly="readonly">@Model.Annotation</textarea>*@
+                    @Model.Annotation
+                </div>
+                <div class="col-6 off-3 align-center">
+                    <h1><a asp-action="Read" asp-controller="Book">Читать</a></h1>
                 </div>
             </div>
         </div>
