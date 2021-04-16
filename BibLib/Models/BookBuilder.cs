@@ -100,41 +100,40 @@ namespace BibLib.Models
         {
             if (file == null)
             {
-                _book.Image = $"~/img/DefaultCover.jpeg";
+                _book.Image = $"../../img/DefaultCover.jpeg";
                 return;
             }
             string path =
-                @$"{rootPath}/wwwroot/img/{_guid}{Path.GetExtension(ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName?.Trim('"'))}";
+                @$"{rootPath.Replace('\\', '/')}/wwwroot/img/{_guid}{Path.GetExtension(ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName?.Trim('"'))}";
             await using (var stream = File.Create(path))
             {
                 await file.CopyToAsync(stream);
                 await stream.FlushAsync();
             }
-            _book.Image = $"~/img/{_guid}{Path.GetExtension(file.Name)}";
+
+            _book.Image =
+                $"../../img/{_guid}{Path.GetExtension(ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName?.Trim('"'))}";
         }
 
         public async Task SetTextAsync(IFormFile file, string rootPath)
         {
             StreamReader reader = new StreamReader(file.OpenReadStream());
             string text = await reader.ReadToEndAsync();
-            Directory.CreateDirectory($"{rootPath}/wwwroot/texts/{_guid}/");
-            await File.WriteAllTextAsync($"{rootPath}/wwwroot/texts/{_guid}/origin.txt", text);
+            Directory.CreateDirectory($"{rootPath.Replace('\\', '/')}/wwwroot/texts/{_guid}/");
+            await File.WriteAllTextAsync($"{rootPath.Replace('\\', '/')}/wwwroot/texts/{_guid}/origin.txt", text);
             reader.Close();
             List<string> pages = BookSlicer(text).ToList();
-            Console.WriteLine("Файлы нарезаны");
             for (int i = 1; i < pages.Count + 1; i++)
             {
-                await using (var stream = File.Create($"{rootPath}/wwwroot/texts/{_guid}/{i}.txt"))
+                await using (var stream = File.Create($"{rootPath.Replace('\\', '/')}/wwwroot/texts/{_guid}/{i}.txt"))
                 {
                     StreamWriter streamWriter = new StreamWriter(stream);
                     streamWriter.Write(pages[i-1]);
                     streamWriter.Close();
                 }
-                Console.WriteLine($"Файл {i} записан");
             }
-            Console.WriteLine("Все файлы перезаписаны");
             _book.NumberOfPages = pages.Count;
-            _book.Text = $"~/texts/{_guid}/";
+            _book.Text = $"../../texts/{_guid}/";
         }
 
         public void SetSeries(string series)
@@ -152,11 +151,6 @@ namespace BibLib.Models
             return _book;
         }
 
-        private Task<Queue<string>> BookSlicerAsync(string input)
-        {
-            return new Task<Queue<string>>(() => BookSlicer(input));
-        }
-        
         private static Queue<string> BookSlicer(string input)
         {
             const int _symbolsInRow = 50;

@@ -24,7 +24,6 @@ namespace BibLib.Models.ViewModels
         [Display(Name = "Серия")]
         public string Series { get; set; }
         public int NumberOfPages { get; set; }
-        [Required(ErrorMessage = "Обязательное поле")]
         [Display(Name = "Текст книги")]
         public IFormFile Text { get; set; }
         [Required(ErrorMessage = "Обязательное поле")]
