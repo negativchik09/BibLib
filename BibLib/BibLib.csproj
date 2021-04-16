@@ -5,11 +5,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="BooksTexts" />
-      <Folder Include="wwwroot" />
       <Folder Include="Areas\Admin\Controllers" />
       <Folder Include="Areas\Admin\Views" />
       <Folder Include="Properties" />
+      <Folder Include="wwwroot\texts" />
     </ItemGroup>
 
     <ItemGroup>

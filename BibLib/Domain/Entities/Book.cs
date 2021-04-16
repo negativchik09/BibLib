@@ -8,6 +8,7 @@ namespace BibLib.Domain.Entities
     {
         public int Id { get; set; }
         public string Title { get; set; }
+        public string Image { get; set; }
         public List<Author> Author { get; set; }
         public List<Genre> Genre { get; set; }
         public string Series { get; set; }

@@ -2,7 +2,7 @@
 using BibLib.Service;
 using Microsoft.AspNetCore.Identity;
 
-namespace BibLib
+namespace BibLib.Models
 {
     public class RoleInitializer
     {
@@ -14,6 +14,10 @@ namespace BibLib
             {
                 await roleManager.CreateAsync(new IdentityRole("admin"));
             }
+            if (await roleManager.FindByNameAsync("librarian") == null)
+            {
+                await roleManager.CreateAsync(new IdentityRole("librarian"));
+            }
             if (await roleManager.FindByNameAsync("premium") == null)
             {
                 await roleManager.CreateAsync(new IdentityRole("premium"));
@@ -24,7 +28,7 @@ namespace BibLib
                 IdentityResult result = await userManager.CreateAsync(admin, password);
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRolesAsync(admin, new []{"admin", "premium"});
+                    await userManager.AddToRolesAsync(admin, new []{"admin", "premium", "librarian"});
                 }
             }
         }
