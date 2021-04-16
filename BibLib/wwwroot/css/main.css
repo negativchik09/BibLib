@@ -2069,6 +2069,14 @@ input, select, textarea {
 		width: 100%;
 	}
 
+	textarea {
+		resize: none;
+	}
+
+	input[type="file"] {
+
+	}
+
 		input[type="text"]:invalid,
 		input[type="password"]:invalid,
 		input[type="email"]:invalid,

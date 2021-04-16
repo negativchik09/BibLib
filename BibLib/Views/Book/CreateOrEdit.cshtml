@@ -33,6 +33,11 @@
                     <input type="file" asp-for="Text" class="align-center" />
                     <span asp-validation-for="Text" class="align-center"></span>
                 </div>
+                <div class="col-6 off-3">
+                    <label asp-for="Annotation" class="align-center"></label>
+                    <textarea rows="5" cols="30" maxlength="800" asp-for="Annotation" draggable="false"></textarea>
+                    <span asp-validation-for="Annotation" class="align-center"></span>
+                </div>
                 <div class="col-4 off-4 aln-center">
                     <input type="submit" value="Создать/Редактировать" class="button special fit" />
                 </div>

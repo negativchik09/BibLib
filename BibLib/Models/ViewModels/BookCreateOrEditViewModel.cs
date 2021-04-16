@@ -27,6 +27,9 @@ namespace BibLib.Models.ViewModels
         [Required(ErrorMessage = "Обязательное поле")]
         [Display(Name = "Текст книги")]
         public IFormFile Text { get; set; }
+        [Required(ErrorMessage = "Обязательное поле")]
+        [Display(Name = "Аннотация")]
+        public string Annotation { get; set; }
         public int Rating { get; set; }
         public int Popularity { get; set; }
     }
