@@ -73,9 +73,9 @@ namespace BibLib.Models
             genres = new List<Genre>();
             Genre buffer;
             string optimalString;
-            foreach (var author in genresRaw)
+            foreach (var genre in genresRaw)
             {
-                optimalString = LetterCasing(author);
+                optimalString = LetterCasing(genre);
                 buffer = await _ctx.Genres.FirstOrDefaultAsync(x => x.Title == optimalString);
                 if (buffer == null)
                 {
@@ -97,6 +97,11 @@ namespace BibLib.Models
 
         public async Task SetImageAsync(IFormFile file, string rootPath)
         {
+            if (file == null)
+            {
+                _book.Image = $"~/img/DefaultCover.jpeg";
+                return;
+            }
             string path =
                 $"{rootPath}/img/{_guid}{Path.GetExtension(file.Name)}";
             await using (var stream = File.Create(path))

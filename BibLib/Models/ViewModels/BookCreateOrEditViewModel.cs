@@ -7,6 +7,8 @@ namespace BibLib.Models.ViewModels
     public class BookCreateOrEditViewModel
     {
         // hidden
+        public BookCreateOrEditViewModel startModel { get; set; }
+        // hidden
         public int Id { get; set; }
         [Required(ErrorMessage = "Обязательное поле")]
         [Display(Name = "Название")]

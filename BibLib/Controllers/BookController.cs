@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using BibLib.Domain;
 using BibLib.Domain.Entities;
+using BibLib.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using BibLib.Models.ViewModels;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 
 // txt fb2 rtf epub
@@ -32,18 +28,53 @@ namespace BibLib.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View("CreateOrEdit", new BookCreateOrEditViewModel());
+            return View("CreateOrEdit", new BookCreateOrEditViewModel{startModel = null});
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            return null;
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateOrCreate(BookCreateOrEditViewModel model)
+        public async Task<IActionResult> EditOrCreate(BookCreateOrEditViewModel model)
         {
             if (ModelState.IsValid)
             {
-                // Author
-                // Genre
-                // Image
-                // Texts
+                if (model.startModel == null)
+                {
+                    BookBuilder builder = new BookBuilder(_ctx);
+                    builder.SetTitle(model.Title);
+                    model.Author = model.Author.Trim();
+                    await builder.SetAuthor(model.Author);
+                    model.Genre = model.Genre.Trim();
+                    await builder.SetGenre(model.Genre);
+                    builder.SetSeries(model.Series);
+                    if (model.Image != null)
+                    {
+                        if (model.Image.Length == 0)
+                        {
+                            ModelState.AddModelError(nameof(model.Image), "Ошибка при загрузке, попробуйте ещё раз");
+                            return View("CreateOrEdit", model);
+                        }
+                        await builder.SetImageAsync(model.Image, _host.ContentRootPath);
+                    }
+                    else
+                    {
+                        await builder.SetImageAsync(null, _host.ContentRootPath);
+                    }
+                    if (model.Text == null || model.Text.Length == 0)
+                    {
+                        ModelState.AddModelError(nameof(model.Text), "Ошибка при загрузке, попробуйте ещё раз");
+                        return View("CreateOrEdit", model);
+                    }
+                    await builder.SetTextAsync(model.Text, _host.ContentRootPath);
+                    Book book = builder.GetBook();
+                    await _ctx.Books.AddAsync(book);
+                    _ctx.SaveChanges();
+                    return Redirect($"~/Book/Info/{book.Id}");
+                }
             }
             return View("CreateOrEdit", model);
         }
