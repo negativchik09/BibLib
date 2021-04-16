@@ -1,0 +1,55 @@
+﻿@model BookInfoViewModel
+<section class="box">
+    <form asp-action="Book" asp-controller="Account" method="post">
+        <div class="container col-6-medium">
+            <div class="row gtr-uniform">
+                <input type="hidden" asp-for="Id" name="Id">
+                <div class="col-3 off-3">
+                    <img src="@Model.Image" />
+                </div>
+                <div class="col-3">
+                    <label asp-for="Title" class="align-center">: @Model.Title</label>
+                    <label asp-for="Author" class="align-center">: @Model.Author</label>
+                    <label asp-for="Genre" class="align-center">: @Model.Genre</label>
+                    <label asp-for="Series" class="align-center">: @Model.Series</label>
+                    <label asp-for="NumberOfPages" class="align-center">: @Model.NumberOfPages</label>
+                    <div id="RatingButtonContainer">
+                        <div class="col-6">
+                            @if (User.IsInRole("librarian") || User.IsInRole("admin"))
+                            {
+                                <a asp-action="Edit" asp-controller="Book">Изменить</a>
+                                
+                            }
+                        </div>
+                        <div class="col-6">
+                            @if (User.IsInRole("librarian") || User.IsInRole("admin"))
+                            {
+                                <a asp-action="Delete" asp-controller="Book">Удалить</a>
+                            }
+                        </div>
+                        <div class="col-2">
+                            @if (User.Identity != null && User.Identity.IsAuthenticated)
+                            {
+                                <input type="button" class="button" value="-" />
+                            }
+                        </div>
+                        <div class="col-8"><label asp-for="Rating" class="align-center">: @Model.Rating</label></div>
+                        <div class="col-2">
+                            @if (User.Identity != null && User.Identity.IsAuthenticated)
+                            {
+                                <input type="button" class="button" value="+" />
+                            }
+                        </div>
+                    </div>
+                    <div class="col-6 off-3 ">
+                        <label asp-for="Annotation" class="align-center"></label>
+                        <textarea readonly="readonly">@Model.Annotation</textarea>
+                    </div>
+                    <div class="col-6 off-3">
+                        <a asp-action="Read" asp-controller="Book">Читать</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>

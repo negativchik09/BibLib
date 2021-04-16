@@ -3660,6 +3660,10 @@ input, select, textarea {
 			}
 		}
 
+	#RatingButtonContainer { 
+		vertical-align: bottom;
+	}
+
 .preloader {
 	position: fixed;
 	left: 0;
