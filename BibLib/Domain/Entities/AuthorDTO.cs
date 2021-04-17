@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BibLib.Domain.Entities
 {
-    [Table("Genres")]
-    public class Genre
+    [Table("Authors")]
+    public class AuthorDTO
     {
         public int Id { get; set; }
-        public string Title { get; set; }
-        public List<Book> Books { get; set; }
+        public string Name { get; set; }
+        public List<AuthorBook> Books { get; set; }
     }
 }
