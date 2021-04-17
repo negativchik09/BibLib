@@ -1,6 +1,6 @@
 ﻿@model BookInfoViewModel
 <section class="box">
-    <form asp-action="Book" asp-controller="Book" method="post">
+    <form asp-action="BookDTO" asp-controller="Book" method="post">
         <div class="container col-6-medium">
             <div class="row gtr-uniform">
                 <input type="hidden" asp-for="Id" name="Id">
@@ -51,13 +51,13 @@
                     @*<div class="col-6">
                         @if (User.IsInRole("librarian") || User.IsInRole("admin"))
                         {
-                            <a asp-action="Edit" asp-controller="Book" asp-route-id="@Model.Id">Изменить</a>
+                            <a asp-action="Edit" asp-controller="BookDTO" asp-route-id="@Model.Id">Изменить</a>
                         }
                     </div>
                     <div class="col-6">
                         @if (User.IsInRole("librarian") || User.IsInRole("admin"))
                         {
-                            <a asp-action="Delete" asp-controller="Book" asp-route-id="@Model.Id">Удалить</a>
+                            <a asp-action="Delete" asp-controller="BookDTO" asp-route-id="@Model.Id">Удалить</a>
                         }
                     </div>
                     <div class="col-2">

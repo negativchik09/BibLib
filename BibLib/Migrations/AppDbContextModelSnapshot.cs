@@ -19,22 +19,22 @@ namespace BibLib.Migrations
                 .HasAnnotation("ProductVersion", "6.0.0-preview.3.21201.2")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("AuthorBook", b =>
+            modelBuilder.Entity("BibLib.Domain.Entities.AuthorBook", b =>
                 {
                     b.Property<int>("AuthorId")
                         .HasColumnType("int");
 
-                    b.Property<int>("BooksId")
+                    b.Property<int>("BookId")
                         .HasColumnType("int");
 
-                    b.HasKey("AuthorId", "BooksId");
+                    b.HasKey("AuthorId", "BookId");
 
-                    b.HasIndex("BooksId");
+                    b.HasIndex("BookId");
 
                     b.ToTable("AuthorBook");
                 });
 
-            modelBuilder.Entity("BibLib.Domain.Entities.Author", b =>
+            modelBuilder.Entity("BibLib.Domain.Entities.AuthorDTO", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -49,7 +49,7 @@ namespace BibLib.Migrations
                     b.ToTable("Authors");
                 });
 
-            modelBuilder.Entity("BibLib.Domain.Entities.Book", b =>
+            modelBuilder.Entity("BibLib.Domain.Entities.BookDTO", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -57,9 +57,6 @@ namespace BibLib.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Annotation")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("NumberOfPages")
@@ -74,15 +71,38 @@ namespace BibLib.Migrations
                     b.Property<string>("Series")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Text")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Books");
+                });
+
+            modelBuilder.Entity("BibLib.Domain.Entities.Bookmark", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Page")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Bookmarks");
                 });
 
             modelBuilder.Entity("BibLib.Domain.Entities.Favorite", b =>
@@ -92,7 +112,7 @@ namespace BibLib.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("BookId")
+                    b.Property<int>("BookId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -100,14 +120,27 @@ namespace BibLib.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Favorites");
                 });
 
-            modelBuilder.Entity("BibLib.Domain.Entities.Genre", b =>
+            modelBuilder.Entity("BibLib.Domain.Entities.GenreBook", b =>
+                {
+                    b.Property<int>("GenreId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.HasKey("GenreId", "BookId");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("GenreBook");
+                });
+
+            modelBuilder.Entity("BibLib.Domain.Entities.GenreDTO", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -143,44 +176,6 @@ namespace BibLib.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("SecretQuestions");
-                });
-
-            modelBuilder.Entity("BibLib.Domain.Entities.Tag", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PagePath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Tags");
-                });
-
-            modelBuilder.Entity("BookGenre", b =>
-                {
-                    b.Property<int>("BooksId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int");
-
-                    b.HasKey("BooksId", "GenreId");
-
-                    b.HasIndex("GenreId");
-
-                    b.ToTable("BookGenre");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -379,34 +374,60 @@ namespace BibLib.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("AuthorBook", b =>
+            modelBuilder.Entity("BibLib.Domain.Entities.AuthorBook", b =>
                 {
-                    b.HasOne("BibLib.Domain.Entities.Author", null)
-                        .WithMany()
+                    b.HasOne("BibLib.Domain.Entities.AuthorDTO", "Author")
+                        .WithMany("Books")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BibLib.Domain.Entities.Book", null)
-                        .WithMany()
-                        .HasForeignKey("BooksId")
+                    b.HasOne("BibLib.Domain.Entities.BookDTO", "Book")
+                        .WithMany("Authors")
+                        .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Book");
                 });
 
-            modelBuilder.Entity("BibLib.Domain.Entities.Favorite", b =>
+            modelBuilder.Entity("BibLib.Domain.Entities.Bookmark", b =>
                 {
-                    b.HasOne("BibLib.Domain.Entities.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookId");
-
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
-                    b.Navigation("Book");
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BibLib.Domain.Entities.Favorite", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BibLib.Domain.Entities.GenreBook", b =>
+                {
+                    b.HasOne("BibLib.Domain.Entities.BookDTO", "Book")
+                        .WithMany("Genres")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BibLib.Domain.Entities.GenreDTO", "Genre")
+                        .WithMany("Books")
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Genre");
                 });
 
             modelBuilder.Entity("BibLib.Domain.Entities.SecretQuestion", b =>
@@ -416,30 +437,6 @@ namespace BibLib.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BibLib.Domain.Entities.Tag", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BookGenre", b =>
-                {
-                    b.HasOne("BibLib.Domain.Entities.Book", null)
-                        .WithMany()
-                        .HasForeignKey("BooksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BibLib.Domain.Entities.Genre", null)
-                        .WithMany()
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -491,6 +488,23 @@ namespace BibLib.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("BibLib.Domain.Entities.AuthorDTO", b =>
+                {
+                    b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("BibLib.Domain.Entities.BookDTO", b =>
+                {
+                    b.Navigation("Authors");
+
+                    b.Navigation("Genres");
+                });
+
+            modelBuilder.Entity("BibLib.Domain.Entities.GenreDTO", b =>
+                {
+                    b.Navigation("Books");
                 });
 #pragma warning restore 612, 618
         }
