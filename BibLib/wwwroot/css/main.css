@@ -196,7 +196,7 @@ input, select, textarea {
 				color: #2ebaae !important;
 			}
 
-	strong, b {
+	/*strong, */b {
 		color: #3c3b3b;
 		font-weight: 700;
 	}
@@ -209,7 +209,7 @@ input, select, textarea {
 		margin: 0 0 2em 0;
 	}
 
-	h1, h2, h3, h4, h5, h6 {
+	h1, h2, h3, h4, h5{
 		color: #3c3b3b;
 		font-family: "Raleway", Helvetica, sans-serif;
 		font-weight: 800;
@@ -219,7 +219,7 @@ input, select, textarea {
 		text-transform: uppercase;
 	}
 
-		h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+		h1 a, h2 a, h3 a, h4 a, h5 a {
 			color: inherit;
 			border-bottom: 0;
 		}
@@ -240,9 +240,9 @@ input, select, textarea {
 		font-size: 0.7em;
 	}
 
-	h6 {
+	/*h6 {
 		font-size: 0.7em;
-	}
+	}*/
 
 	sub {
 		font-size: 0.8em;

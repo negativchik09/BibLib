@@ -5,13 +5,39 @@
             <div class="row gtr-uniform">
                 <input type="hidden" asp-for="Id" name="Id">
                 <div class="col-2 off-3">
-                    <img src="@Model.Image" style="object-fit: fill; height:100%; width:-webkit-fill-available"/>
+                    <img src="@Model.Image" style="object-fit: fill; height:100%; width:100%"/>
                 </div>
                 <div class="col-4">
                     <table border="0">
                         <tr><td><label asp-for="Title"></label></td><td>@Model.Title</td></tr>
-                        <tr><td><label asp-for="Author"></label></td><td>@Model.Author</td></tr>
-                        <tr><td><label asp-for="Genre"></label></td><td>@Model.Genre</td></tr>
+                        <tr>
+                            <td><label asp-for="Author"></label></td>
+                            <td>
+                                @for (int i = 0; i < @Model.Author.Count; i++)
+                                {
+                                    if (i == @Model.Author.Count - 1)
+                                    {
+                                        <a href="~/Home/Search?authors=@Model.Author[i].Id">@Model.Author[i].Name</a>
+                                        break;
+                                    }
+                                    <a href="~/Home/Search?authors=@Model.Author[i].Id">@Model.Author[i].Name</a><strong>, </strong>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label asp-for="Genre"></label></td>
+                            <td>
+                                @for (int i = 0; i < @Model.Genre.Count; i++)
+                                {
+                                    if (i == @Model.Genre.Count - 1)
+                                    {
+                                        <a href="~/Home/Search?authors=@Model.Genre[i].Id">@Model.Genre[i].Title</a>
+                                        break;
+                                    }
+                                    <a href="~/Home/Search?authors=@Model.Genre[i].Id">@Model.Genre[i].Title</a><strong>, </strong>
+                                }
+                            </td>
+                        </tr>
                         <tr><td><label asp-for="Series"></label></td><td>@Model.Series</td></tr>
                         <tr><td><label asp-for="NumberOfPages"></label></td><td>@Model.NumberOfPages</td></tr>
                     </table>
