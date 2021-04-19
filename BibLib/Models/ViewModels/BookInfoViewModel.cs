@@ -22,5 +22,8 @@ namespace BibLib.Models.ViewModels
         public int NumberOfPages { get; set; }
         [Display(Name = "Рейтинг: ")]
         public int Rating { get; set; }
+        public bool IsInFavorites { get; set; }
+        public bool? UpARating { get; set; }
+        public List<BookmarkViewModel> Bookmarks { get; set; }
     }
 }

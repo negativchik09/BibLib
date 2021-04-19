@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using BibLib.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
@@ -25,17 +26,17 @@ namespace BibLib.Controllers
     public class BookController : Controller
     {
         private readonly AppDbContext _ctx;
-        private readonly IHostEnvironment _host;
+        private readonly UserManager<IdentityUser> _umr;
         private readonly string _imgBasePath;
         private readonly string _textBasePath;
-        private readonly string _imgHTML;
-        public BookController(AppDbContext ctx, IHostEnvironment host)
+        private readonly string _imgHtml;
+        public BookController(AppDbContext ctx, IHostEnvironment host, UserManager<IdentityUser> umr)
         {
             _ctx = ctx;
-            _host = host;
-            _imgBasePath = @$"{_host.ContentRootPath.Replace('\\', '/')}/wwwroot/img/books/";
-            _textBasePath = @$"{_host.ContentRootPath.Replace('\\', '/')}/wwwroot/texts/";
-            _imgHTML = "../../img/books/";
+            _umr = umr;
+            _imgBasePath = @$"{host.ContentRootPath.Replace('\\', '/')}/wwwroot/img/books/";
+            _textBasePath = @$"{host.ContentRootPath.Replace('\\', '/')}/wwwroot/texts/";
+            _imgHtml = "../../img/books/";
         }
         
         // Create
@@ -199,11 +200,31 @@ namespace BibLib.Controllers
                         .FirstOrDefault(g => g.Id == pair.GenreId))
                     .ToList(),
                 Id = book.Id,
-                Image = $"{_imgHTML}{id}/{Path.GetFileName(Directory.GetFiles($"{_imgBasePath}{id}")[0])}",
+                Image = $"{_imgHtml}{id}/{Path.GetFileName(Directory.GetFiles($"{_imgBasePath}{id}")[0])}",
                 NumberOfPages = book.NumberOfPages,
                 Rating = book.Rating,
                 Series = book.Series,
-                Title = book.Title
+                Title = book.Title,
+            };
+            if (User.Identity == null)
+            {
+                return View("BookInfo", model);
+            }
+            IdentityUser user = await _umr.FindByNameAsync(User.Identity.Name);
+            model.Bookmarks = _ctx.Bookmarks
+                .Where(x => x.BookId == id && x.User == user)
+                .Select(bm => new BookmarkViewModel
+                {
+                    BookId = id,
+                    Page = bm.Page,
+                    Name = bm.Name
+                }).ToList();
+            model.IsInFavorites = _ctx.Favorites.Any(x => x.User == user && x.BookId == id);
+            Mark mark = await _ctx.Marks.FirstOrDefaultAsync(x => x.User == user && x.BookId == id);
+            model.UpARating = mark switch
+            {
+                null => null,
+                _ => mark.UpRating
             };
             return View("BookInfo", model);
         }
@@ -223,6 +244,24 @@ namespace BibLib.Controllers
             _ctx.GenreBook.RemoveRange(_ctx.GenreBook.Where(x=>x.BookId == id));
             await _ctx.SaveChangesAsync();
             return RedirectToAction("Index", "Home");
+        }
+        
+        [AllowAnonymous]
+        public IActionResult Read(int id, int page, int font = 14)
+        {
+            string path = $"{_textBasePath}{id.ToString()}/pages.json";
+            List<string> pages = JsonConvert.DeserializeObject<List<string>>(System.IO.File.ReadAllText(path));
+            string value = pages[page - 1];
+            return View("Read", new ReadViewModel
+            {
+                Text = value, 
+                Pages = new PaginationViewModel
+                {
+                    PageNumber = page, TotalPages = pages.Count
+                },
+                Id = id,
+                FontSize = font
+            });
         }
 
         private async Task SaveImage(IFormFile file, string path)
@@ -310,24 +349,6 @@ namespace BibLib.Controllers
                 rowsOnPage = 0;
             }
             return pages;
-        }
-
-        [AllowAnonymous]
-        public IActionResult Read(int id, int page, int font = 14)
-        {
-            string path = $"{_textBasePath}{id.ToString()}/pages.json";
-            List<string> pages = JsonConvert.DeserializeObject<List<string>>(System.IO.File.ReadAllText(path));
-            string value = pages[page - 1];
-            return View("Read", new ReadViewModel
-                {
-                    Text = value, 
-                    Pages = new PaginationViewModel
-                    {
-                        PageNumber = page, TotalPages = pages.Count
-                    },
-                    Id = id,
-                    FontSize = font
-                });
         }
     }
 }
