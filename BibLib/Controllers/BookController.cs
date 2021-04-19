@@ -203,7 +203,10 @@ namespace BibLib.Controllers
                 NumberOfPages = book.NumberOfPages,
                 Rating = book.Rating,
                 Series = book.Series,
-                Title = book.Title
+                Title = book.Title,
+                Bookmarks = new List<BookmarkViewModel>(),
+                IsInFavorites = false,
+                UpARating = true
             };
             return View("BookInfo", model);
         }
@@ -223,6 +226,24 @@ namespace BibLib.Controllers
             _ctx.GenreBook.RemoveRange(_ctx.GenreBook.Where(x=>x.BookId == id));
             await _ctx.SaveChangesAsync();
             return RedirectToAction("Index", "Home");
+        }
+        
+        [AllowAnonymous]
+        public IActionResult Read(int id, int page, int font = 14)
+        {
+            string path = $"{_textBasePath}{id.ToString()}/pages.json";
+            List<string> pages = JsonConvert.DeserializeObject<List<string>>(System.IO.File.ReadAllText(path));
+            string value = pages[page - 1];
+            return View("Read", new ReadViewModel
+            {
+                Text = value, 
+                Pages = new PaginationViewModel
+                {
+                    PageNumber = page, TotalPages = pages.Count
+                },
+                Id = id,
+                FontSize = font
+            });
         }
 
         private async Task SaveImage(IFormFile file, string path)
@@ -310,24 +331,6 @@ namespace BibLib.Controllers
                 rowsOnPage = 0;
             }
             return pages;
-        }
-
-        [AllowAnonymous]
-        public IActionResult Read(int id, int page, int font = 14)
-        {
-            string path = $"{_textBasePath}{id.ToString()}/pages.json";
-            List<string> pages = JsonConvert.DeserializeObject<List<string>>(System.IO.File.ReadAllText(path));
-            string value = pages[page - 1];
-            return View("Read", new ReadViewModel
-                {
-                    Text = value, 
-                    Pages = new PaginationViewModel
-                    {
-                        PageNumber = page, TotalPages = pages.Count
-                    },
-                    Id = id,
-                    FontSize = font
-                });
         }
     }
 }
