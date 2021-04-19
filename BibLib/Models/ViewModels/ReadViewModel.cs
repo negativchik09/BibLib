@@ -4,6 +4,7 @@
     {
         public int Id { get; set; }
         public string Text { get; set; }
-        public PaginationViewModel Pages {get; set; }
+        public int FontSize { get; set; }
+        public PaginationViewModel Pages { get; set; }
     }
 }

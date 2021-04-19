@@ -313,7 +313,7 @@ namespace BibLib.Controllers
         }
 
         [AllowAnonymous]
-        public IActionResult Read(int id, int page)
+        public IActionResult Read(int id, int page, int font = 14)
         {
             string path = $"{_textBasePath}{id.ToString()}/pages.json";
             List<string> pages = JsonConvert.DeserializeObject<List<string>>(System.IO.File.ReadAllText(path));
@@ -325,7 +325,8 @@ namespace BibLib.Controllers
                     {
                         PageNumber = page, TotalPages = pages.Count
                     },
-                    Id = id
+                    Id = id,
+                    FontSize = font
                 });
         }
     }
