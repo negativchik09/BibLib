@@ -257,7 +257,7 @@ namespace BibLib.Controllers
         private List<string> BookSlicer(string input)
         {
             const int _symbolsInRow = 50;
-            const int _maxRowsOnPage = 45;
+            const int _maxRowsOnPage = 60;
             string row = "";
             int rowsOnPage = 0;
             string page = "";

@@ -1,3 +1,130 @@
 ﻿@model ReadViewModel
 
-@Model.Text
+<script>
+    function LoadGotoPage() {
+        var gotoPageInput = document.getElementById('goto-page-number');
+        if (!Number.isInteger(Number.parseInt(gotoPageInput.value))) {
+            console.log(gotoPageInput.value);
+            return;
+        }
+        else if (Number.parseInt(gotoPageInput.value) < 1) {
+            window.location.href = ('@Model.Id?page=1&font=' + document.getElementById('font-dropbox').value)
+        }
+        else if (Number.parseInt(gotoPageInput.value) > @Model.Pages.TotalPages) {
+            window.location.href = ('@Model.Id?page=@Model.Pages.TotalPages&font=' + document.getElementById('font-dropbox').value)
+        }
+        else {
+            window.location.href = ('@Model.Id?page=' + gotoPageInput.value + '&font=' + document.getElementById('font-dropbox').value)
+        }
+    }
+</script>
+
+<section class="box">
+    <div class="container col-6-medium">
+        <div class="row gtr-uniform aln-center">
+            <div style="background-color: #ffffff; padding-right:1em; max-width:1000px;">
+                <div class="row" style="margin-bottom:0.5em">
+                    <div class="col-1">
+                        <input id="goto-page-number" style="width:100%; height:100%; text-align:center; border-color:darkgrey; border-width:1px;" type="number" min="1" max="@Model.Pages.TotalPages" value="@Model.Pages.PageNumber" />
+                    </div>
+                    <div class="col-3">
+                        <input type="button" value="Перейти на страницу" style="width:100%; height:100%;" onclick='LoadGotoPage()' />
+                    </div>
+                    <div class="col-2" style="align-self: center;">Размер шрифта:</div>
+                    <div class="col-2">
+                        <select id="font-dropbox" style="width:100%; height:100%;" onchange="window.location.href = ('@Model.Id?page=@Model.Pages.PageNumber' + '&font=' + document.getElementById('font-dropbox').value)">
+                            @for (int i = 8; i < 25; i += 2)
+                            {
+                                if (i == Model.FontSize)
+                                {
+                                    <option selected>@i</option>
+                                    continue;
+                                }
+                                <option>@i</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <input type="button" value="Добавить в закладки" style="width:100%">
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom:0.5em">
+                    <div class="col-2">
+                        @if (Model.Pages.HasPreviousPage)
+                        {
+                            <input type="button" value="НАЗАД <" style="width:100%" onclick="window.location.href = ('@Model.Id?page=@(Model.Pages.PageNumber - 1)' + '&font=' + document.getElementById('font-dropbox').value)">
+                        }
+                    </div>
+                    <div class="col-8 aln-center" style="align-self: center; text-align: center;">
+                        <div style="align-self: center; text-align: center;">
+                            <a href="~/Book/Read/1?page=1" class="page-number">1</a>
+                            @if (Model.Pages.PageNumber > 2)
+                            {
+                                <strong>...</strong>
+                            }
+                            @for (int i = Model.Pages.PageNumber - 2; (i < Model.Pages.PageNumber + 3) && (i <= Model.Pages.TotalPages); i++)
+                            {
+                                if ((i > 1) && (i <= Model.Pages.TotalPages))
+                                {
+                                    <a href="~/Book/Read/@Model.Id?page=@i" class="page-number">@i</a>
+                                }
+                            }
+                            @if (Model.Pages.PageNumber < Model.Pages.TotalPages - 2)
+                            {
+                                <strong>...</strong>
+                                <a href="~/Book/Read/@Model.Id?page=@Model.Pages.TotalPages" class="page-number">@Model.Pages.TotalPages</a>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        @if (Model.Pages.HasNextPage)
+                        {
+                            <input type="button" value="> ВПЕРЁД" style="width:100%" onclick="window.location.href = ('@Model.Id?page=@(Model.Pages.PageNumber + 1)' + '&font=' + document.getElementById('font-dropbox').value)">
+                        }
+                    </div>
+                </div>
+                <div id="page-body" style="font-size:@(Model.FontSize+"pt")">
+                    @foreach (string paragraph in Model.Text.Split("\r\n", StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        <p class="text-fragment">@paragraph</p>
+                    }
+                </div>
+                <div class="row" style="margin-bottom:0.5em">
+                    <div class="col-2">
+                        @if (Model.Pages.HasPreviousPage)
+                        {
+                            <input type="button" value="НАЗАД <" style="width:100%" onclick="window.location.href = ('@Model.Id?page=@(Model.Pages.PageNumber - 1)' + '&font=' + document.getElementById('font-dropbox').value)">
+                        }
+                    </div>
+                    <div class="col-8 aln-center" style="align-self: center; text-align: center;">
+                        <div style="align-self: center; text-align: center;">
+                            <a href="~/Book/Read/1?page=1" class="page-number">1</a>
+                            @if (Model.Pages.PageNumber > 2)
+                            {
+                                <strong>...</strong>
+                            }
+                            @for (int i = Model.Pages.PageNumber - 2; (i < Model.Pages.PageNumber + 3) && (i <= Model.Pages.TotalPages); i++)
+                            {
+                                if ((i > 1) && (i <= Model.Pages.TotalPages))
+                                {
+                                    <a href="~/Book/Read/@Model.Id?page=@i" class="page-number">@i</a>
+                                }
+                            }
+                            @if (Model.Pages.PageNumber < Model.Pages.TotalPages - 2)
+                            {
+                                <strong>...</strong>
+                                <a href="~/Book/Read/@Model.Id?page=@Model.Pages.TotalPages" class="page-number">@Model.Pages.TotalPages</a>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        @if (Model.Pages.HasNextPage)
+                        {
+                            <input type="button" value="> ВПЕРЁД" style="width:100%" onclick="window.location.href = ('@Model.Id?page=@(Model.Pages.PageNumber + 1)' + '&font=' + document.getElementById('font-dropbox').value)">
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
