@@ -1,7 +1,6 @@
 ﻿@model BookInfoViewModel
 <section class="box">
-    <form asp-action="BookDTO" asp-controller="Book" method="post">
-        <div class="container col-6-medium">
+    <div class="container col-6-medium">
             <div class="row gtr-uniform">
                 <input type="hidden" asp-for="Id" name="Id">
                 <div class="col-2 off-3" style="height:25em">
@@ -65,21 +64,23 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="1" class="align-center" style="width:20%;">
-                                @if (User.Identity != null && User.Identity.IsAuthenticated)
-                                {
-                                    <input type="button" class="button align-center" value="-" />
-                                }
-                            </td>
-                            <td colspan="4" class="align-center" style="width:60%;">
-                                <label asp-for="Rating" style="display:inline;"></label>@Model.Rating
-                            </td>
-                            <td colspan="1" class="align-center" style="width:20%;">
-                                @if (User.Identity != null && User.Identity.IsAuthenticated)
-                                {
-                                    <input type="button" class="button align-center" value="+" />
-                                }
-                            </td>
+                            <form asp-action="Rating" asp-controller="Book" method="post">
+                                <td colspan="1" class="align-center" style="width:20%;">
+                                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                                    {
+                                        <input type="button" name="Down" class="button align-center" value="-"/>
+                                    }
+                                </td>
+                                <td colspan="4" class="align-center" style="width:60%;">
+                                    <label asp-for="Rating" style="display:inline;"></label>@Model.Rating
+                                </td>
+                                <td colspan="1" class="align-center" style="width:20%;">
+                                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                                    {
+                                        <input type="button" name="Up" class="button align-center" value="+"/>
+                                    }
+                                </td>
+                            </form>
                         </tr>
                     </table>
                     @*<div class="col-6">
@@ -118,9 +119,8 @@
                     @Model.Annotation
                 </div>
                 <div class="col-6 off-3 align-center">
-                    <h1><a asp-action="Read" asp-controller="Book">Читать</a></h1>
+                    <h1><a asp-action="Read" asp-controller="Book" asp-route-id="@Model.Id" asp-route-page="1">Читать</a></h1>
                 </div>
             </div>
         </div>
-    </form>
 </section>

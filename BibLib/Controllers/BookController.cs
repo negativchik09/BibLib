@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 // txt fb2 rtf epub
 
@@ -82,10 +83,13 @@ namespace BibLib.Controllers
             {
                 return View("CreateOrEdit", model);
             }
-            List<string> pages;
-            using (var reader = new StreamReader(model.Text.OpenReadStream()))
+            List<string> pages = new List<string>();
+            if (model.Id == 0 || model.Text != null)
             {
-                pages = BookSlicer(await reader.ReadToEndAsync());
+                using (var reader = new StreamReader(model.Text.OpenReadStream()))
+                {
+                    pages = BookSlicer(await reader.ReadToEndAsync());
+                }
             }
             BookDTO book;
             Author authorConvert;
@@ -110,7 +114,11 @@ namespace BibLib.Controllers
                 book.Annotation = model.Annotation;
                 book.Title = model.Title;
                 book.Series = model.Series;
-                book.NumberOfPages = pages.Count;
+                book.NumberOfPages = pages.Count switch
+                {
+                    0 => book.NumberOfPages,
+                    _ => pages.Count
+                };
             }
             await _ctx.SaveChangesAsync();
             // Author
@@ -120,6 +128,7 @@ namespace BibLib.Controllers
             List<AuthorBook> authorsID = _ctx.AuthorBook.AsNoTracking().Where(x => x.BookId == book.Id).ToList();
             authorsID.RemoveAll(a => !authorDTOs.Select(x => x.Id).Contains(a.AuthorId));
             _ctx.AuthorBook.RemoveRange(authorsID);
+            await _ctx.SaveChangesAsync();
             foreach (var author in authorDTOs)
             {
                 if (await _ctx.AuthorBook.AsNoTracking()
@@ -135,6 +144,7 @@ namespace BibLib.Controllers
             List<GenreBook> genresID = _ctx.GenreBook.AsNoTracking().Where(x => x.BookId == book.Id).ToList();
             genresID.RemoveAll(g => genreDTOs.Select(x => x.Id).Contains(g.GenreId));
             _ctx.GenreBook.RemoveRange(genresID);
+            await _ctx.SaveChangesAsync();
             foreach (var genre in genreDTOs)
             {
                 if (await _ctx.GenreBook.AsNoTracking()
@@ -145,9 +155,20 @@ namespace BibLib.Controllers
             }
             await _ctx.SaveChangesAsync();
             // Image
-            await SaveImage(model.Image, $@"{_imgBasePath}{book.Id}");
+            if (model.Id == 0 || model.Image != null)
+            {
+                await SaveImage(model.Image, $@"{_imgBasePath}{book.Id}");
+            }
             // Text
-            await SaveText(JsonConvert.SerializeObject(pages), @$"{_textBasePath}{book.Id}");
+            if (model.Id == 0 && model.Text == null)
+            {
+                ModelState.AddModelError(nameof(model.Text), "Обязательное поле");
+                return View("CreateOrEdit", model);
+            }
+            if (model.Id == 0 || model.Text != null)
+            {
+                await SaveText(JsonConvert.SerializeObject(pages), @$"{_textBasePath}{book.Id}");
+            }
             return Redirect($"~/Book/Info/{book.Id}");
         }
 
@@ -200,6 +221,7 @@ namespace BibLib.Controllers
             _ctx.Books.Remove(book);
             _ctx.AuthorBook.RemoveRange(_ctx.AuthorBook.Where(x => x.BookId == id));
             _ctx.GenreBook.RemoveRange(_ctx.GenreBook.Where(x=>x.BookId == id));
+            await _ctx.SaveChangesAsync();
             return RedirectToAction("Index", "Home");
         }
 
@@ -288,6 +310,23 @@ namespace BibLib.Controllers
                 rowsOnPage = 0;
             }
             return pages;
+        }
+
+        [AllowAnonymous]
+        public IActionResult Read(int id, int page)
+        {
+            string path = $"{_textBasePath}{id.ToString()}/pages.json";
+            List<string> pages = JsonConvert.DeserializeObject<List<string>>(System.IO.File.ReadAllText(path));
+            string value = pages[page - 1];
+            return View("Read", new ReadViewModel
+                {
+                    Text = value, 
+                    Pages = new PaginationViewModel
+                    {
+                        PageNumber = page, TotalPages = pages.Count
+                    },
+                    Id = id
+                });
         }
     }
 }
