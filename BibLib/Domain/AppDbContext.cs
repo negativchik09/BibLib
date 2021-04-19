@@ -20,6 +20,7 @@ namespace BibLib.Domain
         public DbSet<Bookmark> Bookmarks { get; set; }
         public DbSet<AuthorBook> AuthorBook { get; set; }
         public DbSet<GenreBook> GenreBook { get; set; }
+        public DbSet<Mark> Marks { get; set; } 
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
