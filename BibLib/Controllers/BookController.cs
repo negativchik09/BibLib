@@ -45,6 +45,8 @@ namespace BibLib.Controllers
             return View("CreateOrEdit", new BookCreateOrEditViewModel{Id = 0});
         }
 
+        // Edit
+        
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -72,7 +74,7 @@ namespace BibLib.Controllers
                 Text = null
             });
         }
-
+        
         [HttpPost]
         public async Task<IActionResult> EditOrCreate(BookCreateOrEditViewModel model)
         {
@@ -115,6 +117,9 @@ namespace BibLib.Controllers
             authorConvert = new Author(_ctx);
             string[] authors = model.Author.Trim().Split(',', StringSplitOptions.TrimEntries);
             IEnumerable<AuthorDTO> authorDTOs = authors.Select(x => authorConvert.GetAuthorDTO(x).Result);
+            List<AuthorBook> authorsID = _ctx.AuthorBook.AsNoTracking().Where(x => x.BookId == book.Id).ToList();
+            authorsID.RemoveAll(a => !authorDTOs.Select(x => x.Id).Contains(a.AuthorId));
+            _ctx.AuthorBook.RemoveRange(authorsID);
             foreach (var author in authorDTOs)
             {
                 if (await _ctx.AuthorBook.AsNoTracking()
@@ -127,6 +132,9 @@ namespace BibLib.Controllers
             genreConvert = new Genre(_ctx);
             string[] genres = model.Genre.Trim().Split(',', StringSplitOptions.TrimEntries);
             IEnumerable<GenreDTO> genreDTOs = genres.Select(x => genreConvert.GetGenreDTO(x).Result);
+            List<GenreBook> genresID = _ctx.GenreBook.AsNoTracking().Where(x => x.BookId == book.Id).ToList();
+            genresID.RemoveAll(g => genreDTOs.Select(x => x.Id).Contains(g.GenreId));
+            _ctx.GenreBook.RemoveRange(genresID);
             foreach (var genre in genreDTOs)
             {
                 if (await _ctx.GenreBook.AsNoTracking()
@@ -140,9 +148,11 @@ namespace BibLib.Controllers
             await SaveImage(model.Image, $@"{_imgBasePath}{book.Id}");
             // Text
             await SaveText(JsonConvert.SerializeObject(pages), @$"{_textBasePath}{book.Id}");
-            return RedirectToAction("Info", "Book", book.Id);
+            return Redirect($"~/Book/Info/{book.Id}");
         }
 
+        // Read
+        
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Info(int id)
@@ -175,6 +185,22 @@ namespace BibLib.Controllers
                 Title = book.Title
             };
             return View("BookInfo", model);
+        }
+        
+        // Delete
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            BookDTO book = await _ctx.Books.FirstOrDefaultAsync(x => x.Id == id);
+            if (book == null)
+            {
+                return StatusCode(404);
+            }
+            _ctx.Books.Remove(book);
+            _ctx.AuthorBook.RemoveRange(_ctx.AuthorBook.Where(x => x.BookId == id));
+            _ctx.GenreBook.RemoveRange(_ctx.GenreBook.Where(x=>x.BookId == id));
+            return RedirectToAction("Index", "Home");
         }
 
         private async Task SaveImage(IFormFile file, string path)
