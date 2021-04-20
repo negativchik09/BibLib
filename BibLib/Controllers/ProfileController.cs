@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -137,11 +138,10 @@ namespace BibLib.Controllers
             }
             AllBookmarksViewModel model = new AllBookmarksViewModel
             {
-                List = new List<(string BookName, List<BookmarkViewModel> Bookmarks)>()
-                Pages = new PaginationViewModel
-                {
+                List = new List<(string BookName, List<BookmarkViewModel> Bookmarks)>(),
+                Pages = new PaginationViewModel{
                     PageNumber = page,
-                    TotalPages = (int)Math.Ceiling(list.Select(x => x.Id).Distinct().Count() / (double)_booksOnPage);
+                    TotalPages = (int)Math.Ceiling(list.Select(x => x.Id).Distinct().Count() / (double)_booksOnPage)
                 }
             };
             foreach (var Id in list.Select(x=>x.BookId).Distinct().Skip((page - 1)*_booksOnPage)
