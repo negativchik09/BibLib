@@ -6,6 +6,10 @@
     </td>
     <td width="45%">
         @Model.Name
+        @if (!Model.IsAvailable)
+        {
+            <strong style="color:crimson"> Внимание! Текст книги был отредактирован бибилотекарем, потому Ваша закладка может вести не в то место, в которое Вы её ставили</strong>
+        }
     </td>
     <td width="15%">
         @Model.Page

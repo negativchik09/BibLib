@@ -134,16 +134,16 @@ namespace BibLib.Controllers
             {
                 List = new List<(string BookName, List<BookmarkViewModel> Bookmarks)>()
             };
-            foreach (var Id in list.Select(x=>x.Id).Distinct().Skip((page - 1)*_booksOnPage)
+            foreach (var Id in list.Select(x=>x.BookId).Distinct().Skip((page - 1)*_booksOnPage)
                 .Take(_booksOnPage))
             {
                 model.List
                     .Add(new ((await _ctx.Books.FirstOrDefaultAsync(x=> x.Id == Id)).Title,
-                        list.Where(x=>x.Id == Id)
+                        list.Where(x=>x.BookId == Id)
                         .Select(x => new BookmarkViewModel
                         {
                             Id = x.Id,
-                            BookId = x.Id,
+                            BookId = x.BookId,
                             IsAvailable = x.IsAvailable,
                             Name = x.Name,
                             Page = x.Page
