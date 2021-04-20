@@ -27,8 +27,9 @@ namespace BibLib.Controllers
             _urm = urm;
             img_path = @$"{host.ContentRootPath.Replace('\\', '/')}/wwwroot/img/books/";
         }
-        public async Task<IActionResult> Profile()
+        public async Task<IActionResult> Profile(int page = 1)
         {
+            int _booksOnPage = 10;
             IdentityUser user = await _urm.FindByEmailAsync(User.Identity?.Name);
             List<string> roles = new List<string>(await _urm.GetRolesAsync(user));
             AccountInformationViewModel account = new AccountInformationViewModel
@@ -39,7 +40,8 @@ namespace BibLib.Controllers
             IQueryable<int> bookId = _ctx.Favorites.AsNoTracking().Where(x => x.User == user).Select(b => b.BookId);
             List<BookDTO> books = _ctx.Books.AsNoTracking().Where(x => bookId.Contains(x.Id)).ToList();
             await _ctx.SaveChangesAsync();
-            List<ShortBookViewModel> list = books.Select(bookDto => new ShortBookViewModel
+            List<ShortBookViewModel> list = books.Skip((page - 1)*_booksOnPage)
+                .Take(_booksOnPage).Select(bookDto => new ShortBookViewModel
             {
                 Id = bookDto.Id,
                 Title = bookDto.Title,
@@ -60,7 +62,16 @@ namespace BibLib.Controllers
                 Rating = bookDto.Rating,
                 Series = bookDto.Series
             }).ToList();
-            return View("Profile", new ProfileViewModel {Account = account, Favorites = list});
+            return View("Profile", new ProfileViewModel 
+                {
+                    Account = account, 
+                    Favorites = list,
+                    Pages = new PaginationViewModel
+                    {
+                        PageNumber = page, 
+                        TotalPages = list.Select(x => x.Id).Distinct().Count()
+                    }
+                });
         }
         
         public async Task<IActionResult> AddFavourite(int id)
@@ -116,7 +127,7 @@ namespace BibLib.Controllers
 
         public async Task<IActionResult> Bookmarks(int page = 1)
         {
-            int _booksOnPage = 5;
+            int _booksOnPage = 10;
             IdentityUser user = await _urm.FindByNameAsync(User.Identity.Name);
             List<Bookmark> list = _ctx.Bookmarks.Where(x => x.User == user).ToList();
             AllBookmarksViewModel model = new AllBookmarksViewModel
@@ -141,8 +152,11 @@ namespace BibLib.Controllers
                     ));
             }
 
-            model.Pages.PageNumber = page;
-            model.Pages.TotalPages = list.Select(x => x.Id).Distinct().Count();
+            model.Pages = new PaginationViewModel
+            {
+                PageNumber = page, 
+                TotalPages = list.Select(x => x.Id).Distinct().Count()
+            };
             return View("Bookmarks", model);
         }
 

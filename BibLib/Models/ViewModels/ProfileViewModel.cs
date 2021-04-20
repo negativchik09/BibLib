@@ -6,5 +6,6 @@ namespace BibLib.Models.ViewModels
     {
         public AccountInformationViewModel Account { get; set; }
         public List<ShortBookViewModel> Favorites { get; set; }
+        public PaginationViewModel Pages { get; set; }
     }
 }
