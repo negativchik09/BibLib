@@ -227,6 +227,50 @@ namespace BibLib.Controllers
             return View("BookInfo", model);
         }
         
+        [HttpPost]
+        public async Task<IActionResult> Rating(int id, string button)
+        {
+            IdentityUser user = await _umr.FindByNameAsync(User.Identity?.Name);
+            if (button == "-")
+            {
+                Mark mark = await _ctx.Marks.FirstOrDefaultAsync(x => x.User == user && x.BookId == id);
+                if (mark == null)
+                {
+                    await _ctx.Marks.AddAsync(new Mark {BookId = id, User = user, UpRating = false});
+                }
+                else if (mark.UpRating)
+                {
+                    _ctx.Marks.Remove(mark);
+                }
+                else
+                {
+                    return StatusCode(404);
+                }
+                BookDTO book = await _ctx.Books.FirstOrDefaultAsync(x => x.Id == id);
+                book.Rating--;
+            }
+            else
+            {
+                Mark mark = await _ctx.Marks.FirstOrDefaultAsync(x => x.User == user && x.BookId == id);
+                if (mark == null)
+                {
+                    await _ctx.Marks.AddAsync(new Mark {BookId = id, User = user, UpRating = true});
+                }
+                else if (!mark.UpRating)
+                {
+                    _ctx.Marks.Remove(mark);
+                }
+                else
+                {
+                    return StatusCode(404);
+                }
+                BookDTO book = await _ctx.Books.FirstOrDefaultAsync(x => x.Id == id);
+                book.Rating++;
+            }
+            await _ctx.SaveChangesAsync();
+            return await Info(id);
+        }
+        
         // Delete
 
         [HttpGet]

@@ -97,7 +97,7 @@ namespace BibLib.Controllers
                 || await _urm.IsInRoleAsync(user, Config.LibrarianRole) 
                 || await _urm.IsInRoleAsync(user, Config.PremiumRole))
             {
-                await _ctx.Favorites.AddAsync(new Favorite{BookId = id, User = user});
+                await _ctx.Bookmarks.AddAsync(new Bookmark{BookId = id, User = user, Name = name, Page = page});
             }
             else
             {
