@@ -164,7 +164,7 @@ namespace BibLib.Controllers
                 IdentityUser user = await _userManager.FindByEmailAsync(model.Email);
                 if (user != null)
                 {
-                    var questionAnswer = await _ctx.SecretQuestions.AsNoTracking().FirstOrDefaultAsync();
+                    var questionAnswer = await _ctx.SecretQuestions.AsNoTracking().FirstOrDefaultAsync(x => x.User == user);
                     if (questionAnswer?.Answer == model.Answer)
                     {
                         return ChangePassword(model.Email);
@@ -199,6 +199,12 @@ namespace BibLib.Controllers
                 return RedirectToAction("Login", "Account");
             }
             return View("ChangePassword", model);
+        }
+
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View("AccessDenied");
         }
     }
 }

@@ -11,7 +11,7 @@ namespace BibLib.Models
             _pattern = pattern;
         }
 
-        public override bool IsValid(object? value)
+        public override bool IsValid(object value)
         {
             return Regex.IsMatch(value?.ToString() ?? string.Empty, _pattern);
         }

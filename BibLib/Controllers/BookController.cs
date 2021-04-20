@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BibLib.Domain;
 using BibLib.Domain.Entities;
@@ -16,7 +15,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 // txt fb2 rtf epub
 
@@ -229,6 +227,50 @@ namespace BibLib.Controllers
             return View("BookInfo", model);
         }
         
+        [HttpPost]
+        public async Task<IActionResult> Rating(int id, string button)
+        {
+            IdentityUser user = await _umr.FindByNameAsync(User.Identity?.Name);
+            if (button == "-")
+            {
+                Mark mark = await _ctx.Marks.FirstOrDefaultAsync(x => x.User == user && x.BookId == id);
+                if (mark == null)
+                {
+                    await _ctx.Marks.AddAsync(new Mark {BookId = id, User = user, UpRating = false});
+                }
+                else if (mark.UpRating)
+                {
+                    _ctx.Marks.Remove(mark);
+                }
+                else
+                {
+                    return StatusCode(404);
+                }
+                BookDTO book = await _ctx.Books.FirstOrDefaultAsync(x => x.Id == id);
+                book.Rating--;
+            }
+            else
+            {
+                Mark mark = await _ctx.Marks.FirstOrDefaultAsync(x => x.User == user && x.BookId == id);
+                if (mark == null)
+                {
+                    await _ctx.Marks.AddAsync(new Mark {BookId = id, User = user, UpRating = true});
+                }
+                else if (!mark.UpRating)
+                {
+                    _ctx.Marks.Remove(mark);
+                }
+                else
+                {
+                    return StatusCode(404);
+                }
+                BookDTO book = await _ctx.Books.FirstOrDefaultAsync(x => x.Id == id);
+                book.Rating++;
+            }
+            await _ctx.SaveChangesAsync();
+            return await Info(id);
+        }
+        
         // Delete
 
         [HttpGet]
@@ -247,7 +289,7 @@ namespace BibLib.Controllers
         }
         
         [AllowAnonymous]
-        public IActionResult Read(int id, int page, int font = 14)
+        public IActionResult Read(int id, int page = 1, int font = 14)
         {
             string path = $"{_textBasePath}{id.ToString()}/pages.json";
             List<string> pages = JsonConvert.DeserializeObject<List<string>>(System.IO.File.ReadAllText(path));

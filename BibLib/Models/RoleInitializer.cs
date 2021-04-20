@@ -10,17 +10,17 @@ namespace BibLib.Models
         {
             string adminEmail = Config.AdminEmail;
             string password = Config.AdminPassword;
-            if (await roleManager.FindByNameAsync("admin") == null)
+            if (await roleManager.FindByNameAsync(Config.AdminRole) == null)
             {
-                await roleManager.CreateAsync(new IdentityRole("admin"));
+                await roleManager.CreateAsync(new IdentityRole(Config.AdminRole));
             }
-            if (await roleManager.FindByNameAsync("librarian") == null)
+            if (await roleManager.FindByNameAsync(Config.LibrarianRole) == null)
             {
-                await roleManager.CreateAsync(new IdentityRole("librarian"));
+                await roleManager.CreateAsync(new IdentityRole(Config.LibrarianRole));
             }
-            if (await roleManager.FindByNameAsync("premium") == null)
+            if (await roleManager.FindByNameAsync(Config.PremiumRole) == null)
             {
-                await roleManager.CreateAsync(new IdentityRole("premium"));
+                await roleManager.CreateAsync(new IdentityRole(Config.PremiumRole));
             }
             if (await userManager.FindByNameAsync(adminEmail) == null)
             {
@@ -28,7 +28,7 @@ namespace BibLib.Models
                 IdentityResult result = await userManager.CreateAsync(admin, password);
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRolesAsync(admin, new []{"admin", "premium", "librarian"});
+                    await userManager.AddToRolesAsync(admin, new []{Config.AdminRole, Config.LibrarianRole, Config.PremiumRole});
                 }
             }
         }
