@@ -1,14 +1,12 @@
 ﻿@model ShortBookViewModel
-<div class="row fa-border" style="margin:1em">
-    <div class="col-3">
-        <img src="@Model.Image" style="object-fit: fill; height:100%; width:100%" />
-    </div>
+<div class="row fa-border" style="margin: 0.25em 1em 0.25em 1em; padding: 1em; height:17.5em">
+    <img src="@Model.Image" style="object-fit: fill" class="col-3"/>
     <div class="col-9">
         <div class="row aln-center">
             <h5>Название: @Model.Title</h5>
         </div>
         <div class="row">
-            <h6 class="col-6 aln-center" style="text-align:center">
+            <h6 class="col-6" >
                 Автор: @for (int i = 0; i < @Model.Author.Count; i++)
                 {
                     if (i == @Model.Author.Count - 1)
@@ -19,7 +17,7 @@
                     <a href="~/Home/Search?authors=@Model.Author[i].Id">@Model.Author[i].Name</a><strong>, </strong>
                 }
             </h6>
-            <h6 class="col-6 aln-center" style="text-align:center">
+            <h6 class="col-6">
                 Жанр:  @for (int i = 0; i < @Model.Genre.Count; i++)
                 {
                     if (i == @Model.Genre.Count - 1)
@@ -32,13 +30,13 @@
             </h6>
         </div>
         <div class="row">
-            <h6 class="col-4 aln-center" style="text-align:center">Серия: @Model.Series</h6>
-            <h6 class="col-4 aln-center" style="text-align:center">Рейтинг: @Model.Rating</h6>
-            <h6 class="col-4 aln-center" style="text-align:center">Кол-во страниц: @Model.NumberOfPages</h6>
+            <h6 class="col-4" >Серия: @Model.Series</h6>
+            <h6 class="col-4" >Рейтинг: @Model.Rating</h6>
+            <h6 class="col-4" >Кол-во страниц: @Model.NumberOfPages</h6>
         </div>
-        <div class="row aln-center">
+        <div class="row aln-center" style="margin:0px,5px,0px,5px">
             <h5><label asp-for="Annotation" style="margin:0; text-align:center"></label></h5>
-            <textarea readonly rows="3" class="text-fragment">@Model.Annotation</textarea>
+            <textarea readonly rows="3" class="text-fragment" style="margin-left: 1em">@Model.Annotation</textarea>
         </div>
         <div class="row">
             <div class="col-6" style="margin:0px,5px,0px,5px">
