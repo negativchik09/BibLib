@@ -83,11 +83,25 @@ namespace BibLib.Controllers
                 return View("CreateOrEdit", model);
             }
             List<string> pages = new List<string>();
+            if (model.Id == 0 && model.Text == null)
+            {
+                ModelState.AddModelError(nameof(model.Text), "Обязательное поле");
+                return View("CreateOrEdit", model);
+            }
             if (model.Id == 0 || model.Text != null)
             {
                 using (var reader = new StreamReader(model.Text.OpenReadStream()))
                 {
                     pages = BookSlicer(await reader.ReadToEndAsync());
+                }
+
+                if (model.Id != 0)
+                {
+                    List<Bookmark> marks = _ctx.Bookmarks.Where(x => x.BookId == model.Id).ToList();
+                    foreach (var mark in marks)
+                    {
+                        mark.IsAvailable = false;
+                    }
                 }
             }
             BookDTO book;
@@ -159,11 +173,6 @@ namespace BibLib.Controllers
                 await SaveImage(model.Image, $@"{_imgBasePath}{book.Id}");
             }
             // Text
-            if (model.Id == 0 && model.Text == null)
-            {
-                ModelState.AddModelError(nameof(model.Text), "Обязательное поле");
-                return View("CreateOrEdit", model);
-            }
             if (model.Id == 0 || model.Text != null)
             {
                 await SaveText(JsonConvert.SerializeObject(pages), @$"{_textBasePath}{book.Id}");
@@ -203,8 +212,9 @@ namespace BibLib.Controllers
                 Rating = book.Rating,
                 Series = book.Series,
                 Title = book.Title,
+                Bookmarks = new List<BookmarkViewModel>()
             };
-            if (User.Identity == null)
+            if (User.Identity == null || User.Identity.Name == null)
             {
                 return View("BookInfo", model);
             }
@@ -217,6 +227,7 @@ namespace BibLib.Controllers
                 .Where(x => x.BookId == id && x.User == user)
                 .Select(bm => new BookmarkViewModel
                 {
+                    Id = bm.Id,
                     BookId = id,
                     Page = bm.Page,
                     Name = bm.Name,

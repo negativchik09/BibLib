@@ -1,7 +1,8 @@
 ﻿@model BookmarkViewModel
 <tr>
     <td width="20%">
-        <a class="button small" id="cancel-button" asp-action="DeleteBookmark" asp-controller="Profile">Удалить</a>
+        <a class="button small" id="cancel-button"
+           onclick="fetch('@Context.Request.PathBase/Profile/DeleteBookmark/@Model.Id').then(response => location.reload());">Удалить</a>
     </td>
     <td width="45%">
         @Model.Name
