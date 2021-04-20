@@ -78,7 +78,7 @@
                                 {
                                     @if (Model.UpARating != false)
                                     {
-                                        <input type="submit" name="button" class="button small" value="-"/>
+                                        <input type="submit" name="button" class="button small" value="-" />
                                     }
                                 }
                             </td>
@@ -90,7 +90,7 @@
                                 {
                                     @if (Model.UpARating != true)
                                     {
-                                        <input type="submit" name="button" class="button small" value="+"/>
+                                        <input type="submit" name="button" class="button small" value="+" />
                                     }
                                 }
                             </td>
@@ -102,9 +102,36 @@
                 <label asp-for="Annotation" class="align-center"></label>
                 @Model.Annotation
             </div>
-            <div class="col-6 off-3 align-center">
-                <h1><a asp-action="Read" asp-controller="Book" asp-route-id="@Model.Id" asp-route-page="1" class="button fit">Читать</a></h1>
+            <div class="col-6 off-3 ">
+                <table border="1" style="margin: 0 0 1em 0;">
+                    <thead>
+                        <tr>
+                            <td colspan="4" align="center"><h5 style="margin:0">Ваши закладки</h5></td>
+                        </tr>
+                        <tr>
+                            <td width="20%">
+                                
+                            </td>
+                            <td width="45%">
+                                Имя закладки
+                            </td>
+                            <td width="15%">
+                                Страница
+                            </td>
+                            <td width="20%">
+                                
+                            </td>
+                        </tr>
+                    </thead>
+                    @foreach (BookmarkViewModel bookmark in Model.Bookmarks)
+                    {
+                        @await Html.PartialAsync("~/Views/Shared/BookmarkPartial.cshtml", bookmark);
+                    }
+                </table>
+            </div>
+                <div class="col-6 off-3 align-center">
+                    <h1><a asp-action="Read" asp-controller="Book" asp-route-id="@Model.Id" asp-route-page="1" class="button fit">Читать</a></h1>
+                </div>
             </div>
         </div>
-    </div>
 </section>

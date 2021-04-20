@@ -1,0 +1,15 @@
+﻿@model BookmarkViewModel
+<tr>
+    <td width="20%">
+        <a class="button small" id="cancel-button" asp-action="DeleteBookmark" asp-controller="Profile">Удалить</a>
+    </td>
+    <td width="45%">
+        @Model.Name
+    </td>
+    <td width="15%">
+        @Model.Page
+    </td>
+    <td width="20%">
+        <a class="button small" href="~/Book/Read/@Model.BookId?page=@Model.Page">Перейти</a>
+    </td>
+</tr> 
