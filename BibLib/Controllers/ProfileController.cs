@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BibLib.Domain;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace BibLib.Controllers
 {
@@ -17,11 +19,13 @@ namespace BibLib.Controllers
     {
         private readonly AppDbContext _ctx;
         private readonly UserManager<IdentityUser> _urm;
+        private readonly string img_path;
 
-        public ProfileController(AppDbContext ctx, UserManager<IdentityUser> urm)
+        public ProfileController(AppDbContext ctx, UserManager<IdentityUser> urm, IHostEnvironment host)
         {
             _ctx = ctx;
             _urm = urm;
+            img_path = @$"{host.ContentRootPath.Replace('\\', '/')}/wwwroot/img/books/";
         }
         public async Task<IActionResult> Profile()
         {
@@ -50,7 +54,7 @@ namespace BibLib.Controllers
                     .Select(pair => _ctx.Genres.AsNoTracking()
                         .FirstOrDefault(g => g.Id == pair.GenreId))
                     .ToList(),
-                Image = $"../../img/books/{bookDto.Id}",
+                Image = $"../../img/books/{bookDto.Id}/{Path.GetFileName(Directory.GetFiles($"{img_path}{bookDto.Id}")[0])}",
                 NumberOfPages = bookDto.NumberOfPages,
                 Popularity = bookDto.Popularity,
                 Rating = bookDto.Rating,
@@ -126,6 +130,7 @@ namespace BibLib.Controllers
                         list.Where(x=>x.Id == Id)
                         .Select(x => new BookmarkViewModel
                         {
+                            Id = x.Id,
                             BookId = x.Id,
                             IsAvailable = x.IsAvailable,
                             Name = x.Name,
@@ -135,6 +140,19 @@ namespace BibLib.Controllers
                     ));
             }
             return View("Bookmarks", model);
+        }
+
+        public async Task<IActionResult> DeleteBookmark(int id)
+        {
+            IdentityUser user = await _urm.FindByNameAsync(User.Identity.Name);
+            Bookmark mark = await _ctx.Bookmarks.FirstOrDefaultAsync(x => x.Id == id && x.User == user);
+            if (mark != null)
+            {
+                _ctx.Bookmarks.Remove(mark);
+                await _ctx.SaveChangesAsync();
+            }
+
+            return StatusCode(200);
         }
     }
 }
