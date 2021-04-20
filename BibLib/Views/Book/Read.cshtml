@@ -64,8 +64,8 @@
                 <div class="row" id="add-bookmark" style="margin-bottom:0.5em">
                     <form class="row" id="add-bookmark-form" asp-action="AddBookmark" asp-controller="Profile">
                         <input type="hidden" asp-for="Id" name="id" />
-                        <input type="hidden" asp-for="Pages.PageNumber" name="pagenumber" />
-                        <input type="hidden" name="fontsize" value='document.getElementById("font-dropbox").value'/>
+                        <input type="hidden" asp-for="Pages.PageNumber" name="page" />
+                        <input type="hidden" name="font" value='document.getElementById("font-dropbox").value'/>
                         <div class="col-6">
                             <input name="BookmarkName" placeholder="Введите имя закладки" class="align-center" style="width:100%; height:100%;" />
                         </div>
