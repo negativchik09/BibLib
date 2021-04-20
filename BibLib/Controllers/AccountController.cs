@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using BibLib.Domain;
 using BibLib.Domain.Entities;
 using BibLib.Models.ViewModels;
+using BibLib.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -205,6 +206,18 @@ namespace BibLib.Controllers
         public IActionResult AccessDenied()
         {
             return View("AccessDenied");
+        }
+
+        [HttpGet]
+        public IActionResult Premium()
+        {
+            if (User.IsInRole(Config.LibrarianRole) || User.IsInRole(Config.PremiumRole) ||
+                User.IsInRole(Config.AdminRole))
+            {
+                return RedirectToAction("Profile", "Profile");
+            }
+
+            return View("Premium", new PremiumViewModel());
         }
     }
 }

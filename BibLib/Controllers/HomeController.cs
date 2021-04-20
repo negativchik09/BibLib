@@ -12,6 +12,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Hosting;
 
+// Random element
+// Random rand = new Random();
+// el = _ctx.Books.OrderBy(r => Guid.NewGuid()).Skip(rand.Next(1, _ctx.Books.Count)).Take(1).FirstOrDefault();
+
 namespace BibLib.Controllers
 {
     public class HomeController : Controller
