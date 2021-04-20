@@ -125,21 +125,31 @@ namespace BibLib.Controllers
             return Redirect($"~/Book/Read/1?page={page}&font={font}");
         }
 
-        public async Task<IActionResult> Bookmarks(int page = 1)
+        public async Task<IActionResult> Bookmarks(int page = 1, string search = null)
         {
             int _booksOnPage = 10;
             IdentityUser user = await _urm.FindByNameAsync(User.Identity.Name);
             List<Bookmark> list = _ctx.Bookmarks.Where(x => x.User == user).ToList();
+            if (search == null)
+            {
+                page = 1;
+                _booksOnPage = list.Select(x => x.Id).Distinct().Count();
+            }
             AllBookmarksViewModel model = new AllBookmarksViewModel
             {
                 List = new List<(string BookName, List<BookmarkViewModel> Bookmarks)>()
+                Pages = new PaginationViewModel
+                {
+                    PageNumber = page,
+                    TotalPages = (int)Math.Ceiling(list.Select(x => x.Id).Distinct().Count() / (double)_booksOnPage);
+                }
             };
             foreach (var Id in list.Select(x=>x.BookId).Distinct().Skip((page - 1)*_booksOnPage)
                 .Take(_booksOnPage))
             {
                 model.List
                     .Add(new ((await _ctx.Books.FirstOrDefaultAsync(x=> x.Id == Id)).Title,
-                        list.Where(x=>x.BookId == Id)
+                        list.Where(x=>x.BookId == Id && (search == null || x.Name.Contains(search)))
                         .Select(x => new BookmarkViewModel
                         {
                             Id = x.Id,
@@ -151,12 +161,6 @@ namespace BibLib.Controllers
                         .ToList()
                     ));
             }
-
-            model.Pages = new PaginationViewModel
-            {
-                PageNumber = page, 
-                TotalPages = list.Select(x => x.Id).Distinct().Count()
-            };
             return View("Bookmarks", model);
         }
 

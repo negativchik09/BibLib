@@ -12,7 +12,11 @@ namespace BibLib.Controllers
         {
             return View();
         }
-        
-        
+
+        [HttpGet]
+        public async Task<IActionResult> Search(string queue)
+        {
+            return null;
+        }
     }
 }
