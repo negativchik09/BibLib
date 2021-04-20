@@ -44,8 +44,8 @@ namespace BibLib
             {
                 options.Cookie.Name = "AlphaStoreCookie";
                 options.Cookie.HttpOnly = true;
-                options.LoginPath = "/account/login";
-                options.AccessDeniedPath = "/account/accessdenied";
+                options.LoginPath = "/Account/Login";
+                options.AccessDeniedPath = "/Account/AccessDenied";
                 options.SlidingExpiration = true;
             });
             // Setup policy of authorization for Admin area
