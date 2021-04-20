@@ -64,15 +64,16 @@
                 <div class="row" id="add-bookmark" style="margin-bottom:0.5em">
                     <form class="row" id="add-bookmark-form" asp-action="AddBookmark" asp-controller="Profile">
                         <input type="hidden" asp-for="Id" name="id" />
-                        <input type="hidden" asp-for="Pages.PageNumber" name="id" />
+                        <input type="hidden" asp-for="Pages.PageNumber" name="pagenumber" />
+                        <input type="hidden" name="fontsize" value='document.getElementById("font-dropbox").value'/>
                         <div class="col-6">
-                            <input name="BookmarkName" placeholder="Введите имя закладки" class="align-center" style="width:100%; height:100%;"/>
+                            <input name="BookmarkName" placeholder="Введите имя закладки" class="align-center" style="width:100%; height:100%;" />
                         </div>
                         <div class="col-3">
-                            <input type="submit" value="Добавить закладку" style="width:100%; height:100%;"/>
+                            <input type="submit" value="Добавить закладку" style="width:100%; height:100%;" />
                         </div>
                         <div class="col-3">
-                            <input type="button" value="Отмена" onclick='closeForm()' id="cancel-button" style="width:100%; height:100%;"/>
+                            <input type="button" value="Отмена" onclick='closeForm()' id="cancel-button" style="width:100%; height:100%;" />
                         </div>
                     </form>
                 </div>
