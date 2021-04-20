@@ -1,0 +1,52 @@
+﻿@model ShortBookViewModel
+<div class="row fa-border" style="margin:1em">
+    <div class="col-3">
+        <img src="@Model.Image" style="object-fit: fill; height:100%; width:100%" />
+    </div>
+    <div class="col-9">
+        <div class="row aln-center">
+            <h5>Название: @Model.Title</h5>
+        </div>
+        <div class="row">
+            <h6 class="col-6 aln-center" style="text-align:center">
+                Автор: @for (int i = 0; i < @Model.Author.Count; i++)
+                {
+                    if (i == @Model.Author.Count - 1)
+                    {
+                        <a href="~/Home/Search?authors=@Model.Author[i].Id">@Model.Author[i].Name</a>
+                        break;
+                    }
+                    <a href="~/Home/Search?authors=@Model.Author[i].Id">@Model.Author[i].Name</a><strong>, </strong>
+                }
+            </h6>
+            <h6 class="col-6 aln-center" style="text-align:center">
+                Жанр:  @for (int i = 0; i < @Model.Genre.Count; i++)
+                {
+                    if (i == @Model.Genre.Count - 1)
+                    {
+                        <a href="~/Home/Search?authors=@Model.Genre[i].Id">@Model.Genre[i].Title</a>
+                        break;
+                    }
+                    <a href="~/Home/Search?authors=@Model.Genre[i].Id">@Model.Genre[i].Title</a><strong>, </strong>
+                }
+            </h6>
+        </div>
+        <div class="row">
+            <h6 class="col-4 aln-center" style="text-align:center">Серия: @Model.Series</h6>
+            <h6 class="col-4 aln-center" style="text-align:center">Рейтинг: @Model.Rating</h6>
+            <h6 class="col-4 aln-center" style="text-align:center">Кол-во страниц: @Model.NumberOfPages</h6>
+        </div>
+        <div class="row aln-center">
+            <h5><label asp-for="Annotation" style="margin:0; text-align:center"></label></h5>
+            <textarea readonly rows="3" class="text-fragment">@Model.Annotation</textarea>
+        </div>
+        <div class="row">
+            <div class="col-6" style="margin:0px,5px,0px,5px">
+                <a asp-action="Info" asp-controller="Book" asp-route-id="@Model.Id" class="button small">Страница книги</a>
+            </div>
+            <div class="col-6" style="margin:0px,5px,0px,5px">
+                <a asp-action="Read" asp-controller="Book" asp-route-id="@Model.Id" asp-route-page="1" class="button small">Читать</a>
+            </div>
+        </div>
+    </div>
+</div>

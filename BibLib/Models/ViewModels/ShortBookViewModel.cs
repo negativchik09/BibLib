@@ -15,6 +15,7 @@ namespace BibLib.Models.ViewModels
         public int NumberOfPages { get; set; }
         public int Rating { get; set; }
         public int Popularity { get; set; }
+        [Display (Name="Аннотация")]
         public string Annotation { get; set; }
     }
 }

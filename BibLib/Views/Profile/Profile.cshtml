@@ -1,2 +1,25 @@
 ﻿@model ProfileViewModel
-
+<section class="box">
+    <div class="container col-8-medium">
+        <div class="row aln-center">
+            <div style="background-color: #ffffff; padding:1em;  width:1000px;">
+                <div class="row">
+                    <h5>Ваш текущий статус: @Model.Account.Status</h5>
+                </div>
+                <div class="row">
+                    <h5>Ваш почтовый адрес: @Model.Account.Email</h5>
+                </div>
+                <div class="row" style="margin-bottom: 1em; width:auto">
+                    <a class="button small" asp-action="ChangePassword" asp-controller="Account">Изменить пароль</a>
+                </div>
+                <div class="row aln-center">
+                    <h3>Избранное</h3>
+                </div>
+                @foreach (ShortBookViewModel book in Model.Favorites)
+                {
+                    @await Html.PartialAsync("~/Views/Shared/ShortBookPartial.cshtml", book);
+                }
+            </div>
+        </div>
+    </div>
+</section>

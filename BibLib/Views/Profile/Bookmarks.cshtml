@@ -1,1 +1,35 @@
 ﻿@model AllBookmarksViewModel
+
+<section class="box">
+    <div class="container col-6-medium">
+        <div class="row gtr-uniform aln-center">
+            <h1>Ваши закладки</h1>
+            @foreach ((string BookName, List<BookmarkViewModel> Bookmarks) corteage in Model.List)
+            {
+                <table border="1" style="margin: 0 0 1em 0;">
+                    <thead>
+                        <tr>
+                            <td colspan="4" align="center"><h3 style="margin:0">Книга: @corteage.BookName</h3></td>
+                        </tr>
+                        <tr>
+                            <td width="20%">
+                            </td>
+                            <td width="45%">
+                                Имя закладки
+                            </td>
+                            <td width="15%">
+                                Страница
+                            </td>
+                            <td width="20%">
+                            </td>
+                        </tr>
+                    </thead>
+                    @foreach (BookmarkViewModel bookmark in corteage.Bookmarks)
+                    {
+                        @await Html.PartialAsync("~/Views/Shared/BookmarkPartial.cshtml", bookmark);
+                    }
+                </table>
+            }
+        </div> 
+    </div>
+</section>

@@ -52,8 +52,8 @@ namespace BibLib.Controllers
                     .ToList(),
                 Image = $"../../img/books/{bookDto.Id}",
                 NumberOfPages = bookDto.NumberOfPages,
-                Popularity = bookDto.NumberOfPages,
-                Rating = bookDto.NumberOfPages,
+                Popularity = bookDto.Popularity,
+                Rating = bookDto.Rating,
                 Series = bookDto.Series
             }).ToList();
             return View("Profile", new ProfileViewModel {Account = account, Favorites = list});
