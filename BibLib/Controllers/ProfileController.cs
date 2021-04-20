@@ -107,22 +107,40 @@ namespace BibLib.Controllers
         public async Task<IActionResult> AddBookmark(int id, int page, int font, string name = null)
         {
             IdentityUser user = await _urm.FindByNameAsync(User.Identity?.Name);
-            if (await _ctx.Favorites.AnyAsync(x => x.BookId == id && x.User == user) 
-                || await _urm.IsInRoleAsync(user, Config.AdminRole) 
-                || await _urm.IsInRoleAsync(user, Config.LibrarianRole) 
-                || await _urm.IsInRoleAsync(user, Config.PremiumRole))
+            if (await _urm.IsInRoleAsync(user, Config.AdminRole) ||
+                await _urm.IsInRoleAsync(user, Config.LibrarianRole) ||
+                await _urm.IsInRoleAsync(user, Config.PremiumRole))
             {
-                await _ctx.Bookmarks.AddAsync(new Bookmark{BookId = id, User = user, Name = name, Page = page, IsAvailable = true});
+                await _ctx.Bookmarks.AddAsync(new Bookmark
+                {
+                    BookId = id,
+                    IsAvailable = true,
+                    Page = page,
+                    Name = name,
+                    User = user
+                });
+                await _ctx.SaveChangesAsync();
             }
             else
             {
-                Bookmark mark = await _ctx.Bookmarks.FirstAsync(x => x.BookId == id && x.User == user);
-                mark.Page = page;
-                mark.IsAvailable = true;
+                Bookmark bookmark = await _ctx.Bookmarks.FirstOrDefaultAsync(x => x.BookId == id && x.User == user);
+                if (bookmark == null)
+                {
+                    await _ctx.Bookmarks.AddAsync(new Bookmark
+                    {
+                        BookId = id,
+                        IsAvailable = true,
+                        Page = page,
+                        User = user
+                    });
+                    await _ctx.SaveChangesAsync();
+                }
+                else
+                {
+                    bookmark.Page = page;
+                    await _ctx.SaveChangesAsync();
+                }
             }
-
-            await _ctx.SaveChangesAsync();
-
             return Redirect($"~/Book/Read/1?page={page}&font={font}");
         }
 

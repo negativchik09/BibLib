@@ -244,9 +244,14 @@ namespace BibLib.Controllers
         }
         
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Rating(int id, string button)
         {
             IdentityUser user = await _umr.FindByNameAsync(User.Identity?.Name);
+            if (user == null)
+            {
+                return View("AccessDenied");
+            }
             if (button == "-")
             {
                 Mark mark = await _ctx.Marks.FirstOrDefaultAsync(x => x.User == user && x.BookId == id);
