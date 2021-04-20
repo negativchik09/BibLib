@@ -1,114 +1,60 @@
 ﻿@model BookInfoViewModel
 <section class="box">
     <div class="container col-6-medium">
-        <div class="row gtr-uniform">
-            <input type="hidden" asp-for="Id" name="Id">
-            <div class="col-2 off-3" style="height:25em">
-                <img src="@Model.Image" style="object-fit: fill; height:100%; width:100%" />
-            </div>
-            <div class="col-4" style="height:25em">
-                <table border="0" style="margin: 0 0 1em 0;">
-                    <tr><td><label asp-for="Title"></label></td><td>@Model.Title</td></tr>
-                    <tr>
-                        <td><label asp-for="Author"></label></td>
-                        <td>
-                            @for (int i = 0; i < @Model.Author.Count; i++)
-                            {
-                                if (i == @Model.Author.Count - 1)
-                                {
-                                    <a href="~/Home/Search?authors=@Model.Author[i].Id">@Model.Author[i].Name</a>
-                                    break;
-                                }
-                                <a href="~/Home/Search?authors=@Model.Author[i].Id">@Model.Author[i].Name</a><strong>, </strong>
-                            }
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label asp-for="Genre"></label></td>
-                        <td>
-                            @for (int i = 0; i < @Model.Genre.Count; i++)
-                            {
-                                if (i == @Model.Genre.Count - 1)
-                                {
-                                    <a href="~/Home/Search?authors=@Model.Genre[i].Id">@Model.Genre[i].Title</a>
-                                    break;
-                                }
-                                <a href="~/Home/Search?authors=@Model.Genre[i].Id">@Model.Genre[i].Title</a><strong>, </strong>
-                            }
-                        </td>
-                    </tr>
-                    <tr><td><label asp-for="Series"></label></td><td>@Model.Series</td></tr>
-                    <tr><td><label asp-for="NumberOfPages"></label></td><td>@Model.NumberOfPages</td></tr>
-                </table>
-                    @if (User.IsInRole("librarian") || User.IsInRole("admin"))
-                    {
-                        <div class="row" style="margin:0 0 1em 0">
-                            <div class="col-6" style=" padding: 0;">
-                                <a asp-action="Edit" asp-controller="Book" asp-route-id="@Model.Id" class="button small">Изменить</a>
-                            </div>
-                            <div class="col-6" style=" padding: 0;">
-                                <a asp-action="Delete" asp-controller="Book" asp-route-id="@Model.Id" onclick="return confirm('Вы уверены, что хотите удалить книгу?')" class="button small" id="cancel-button">Удалить</a>
-                            </div>
-                        </div>
-                    }
-                    <div class="row" style="margin:0 0 1em 0">
-                        <div class="col-12" style=" padding: 0;">
-                        @if (User.Identity != null && User.Identity.IsAuthenticated)
-                        {
-                            @if (Model.IsInFavorites)
-                            {
-                                <a asp-action="DeleteFavourite" asp-controller="Profile" asp-route-id="@Model.Id" asp-route-isInProfile="false" class="button small">Убрать из избранного</a>
-                            }
-                            else
-                            {
-                                <a asp-action="AddFavourite" asp-controller="Profile" asp-route-id="@Model.Id" class="button small">Добавить в избранное</a>
-                            }
-                        }
-                        </div>
+        <div class="row gtr-uniform aln-center">
+            <div style="background-color: #ffffff; padding-right:1em; max-width:1000px;">
+                <input type="hidden" asp-for="Id" name="Id">
+                <div class="row">
+                    <div class="col-4" style="height:25em">
+                        <img src="@Model.Image" style="object-fit: fill; height:100%; width:100%" />
                     </div>
-                    <form asp-action="Rating" asp-controller="Book" method="post">
-                        <div class="row" style="margin:0 0 1em 0">
-                            <input asp-for="Id" type="hidden">
-                            <div class="col-2" style=" padding: 0;">
-                                @if (User.Identity != null && User.Identity.IsAuthenticated)
-                                {
-                                    @if (Model.UpARating != false)
+                    <div class="col-8" style="height:25em">
+                        <table border="0" style="margin: 0 0 1em 0;">
+                            <tr><td><label asp-for="Title"></label></td><td>@Model.Title</td></tr>
+                            <tr>
+                                <td><label asp-for="Author"></label></td>
+                                <td>
+                                    @for (int i = 0; i < @Model.Author.Count; i++)
                                     {
-                                        <input type="submit" name="button" class="button small" value="-" style="font-size: 1.4em; height: 1.75em; line-height: 1.75em; padding: 0;"/>
+                                        if (i == @Model.Author.Count - 1)
+                                        {
+                                            <a href="~/Home/Search?authors=@Model.Author[i].Id">@Model.Author[i].Name</a>
+                                            break;
+                                        }
+                                        <a href="~/Home/Search?authors=@Model.Author[i].Id">@Model.Author[i].Name</a><strong>, </strong>
                                     }
-                                }
-                            </div>
-                            <div class="col-8 align-center" style="align-self: center; padding: 0;">
-                                <label asp-for="Rating" style="display:inline;"></label>@Model.Rating
-                            </div>
-                            <div class="col-2" style=" padding: 0;">
-                                @if (User.Identity != null && User.Identity.IsAuthenticated)
-                                {
-                                    @if (Model.UpARating != true)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label asp-for="Genre"></label></td>
+                                <td>
+                                    @for (int i = 0; i < @Model.Genre.Count; i++)
                                     {
-                                        <input type="submit" name="button" class="button small" value="+" style="font-size: 1.4em; height: 1.75em; line-height: 1.75em; padding: 0;"/>
+                                        if (i == @Model.Genre.Count - 1)
+                                        {
+                                            <a href="~/Home/Search?authors=@Model.Genre[i].Id">@Model.Genre[i].Title</a>
+                                            break;
+                                        }
+                                        <a href="~/Home/Search?authors=@Model.Genre[i].Id">@Model.Genre[i].Title</a><strong>, </strong>
                                     }
-                                }
-                            </div>
-                        </div>
-                    </form>
-                    @*<table border="0" style="margin:0;">
-                        <tr>
-                            <td colspan="3" class="align-center" style="width:50%; padding:0;">
-                                @if (User.IsInRole("librarian") || User.IsInRole("admin"))
-                                {
+                                </td>
+                            </tr>
+                            <tr><td><label asp-for="Series"></label></td><td>@Model.Series</td></tr>
+                            <tr><td><label asp-for="NumberOfPages"></label></td><td>@Model.NumberOfPages</td></tr>
+                        </table>
+                        @if (User.IsInRole("librarian") || User.IsInRole("admin"))
+                        {
+                            <div class="row" style="margin:0 0 1em 0">
+                                <div class="col-6" style=" padding: 0;">
                                     <a asp-action="Edit" asp-controller="Book" asp-route-id="@Model.Id" class="button small">Изменить</a>
-                                }
-                            </td>
-                            <td colspan="3" class="align-center" style="width:50%; padding:0;">
-                                @if (User.IsInRole("librarian") || User.IsInRole("admin"))
-                                {
-                                    <a asp-action="Delete" asp-controller="Book" asp-route-id="@Model.Id" onclick="return confirm('Вы уверены, что хотите удалить книгу?')" class="button small">Удалить</a>
-                                }
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="6" class="align-center">
+                                </div>
+                                <div class="col-6" style=" padding: 0;">
+                                    <a asp-action="Delete" asp-controller="Book" asp-route-id="@Model.Id" onclick="return confirm('Вы уверены, что хотите удалить книгу?')" class="button small" id="cancel-button">Удалить</a>
+                                </div>
+                            </div>
+                        }
+                        <div class="row" style="margin:0 0 1em 0">
+                            <div class="col-12" style=" padding: 0;">
                                 @if (User.Identity != null && User.Identity.IsAuthenticated)
                                 {
                                     @if (Model.IsInFavorites)
@@ -120,79 +66,137 @@
                                         <a asp-action="AddFavourite" asp-controller="Profile" asp-route-id="@Model.Id" class="button small">Добавить в избранное</a>
                                     }
                                 }
-                            </td>
-                        </tr>
-                        <tr>
-                            <form asp-action="Rating" asp-controller="Book" method="post">
+                            </div>
+                        </div>
+                        <form asp-action="Rating" asp-controller="Book" method="post">
+                            <div class="row" style="margin:0 0 1em 0">
                                 <input asp-for="Id" type="hidden">
-                                <td colspan="1" class="align-center" style="width:20%;">
+                                <div class="col-2" style=" padding: 0;">
                                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                                     {
                                         @if (Model.UpARating != false)
                                         {
-                                            <input type="submit" name="button" class="button small" value="-" />
+                                            <input type="submit" name="button" class="button small" value="-" style="font-size: 1.4em; height: 1.75em; line-height: 1.75em; padding: 0;" />
                                         }
                                     }
-                                </td>
-                                <td colspan="4" class="align-center" style="width:60%;">
+                                </div>
+                                <div class="col-8 align-center" style="align-self: center; padding: 0;">
                                     <label asp-for="Rating" style="display:inline;"></label>@Model.Rating
-                                </td>
-                                <td colspan="1" class="align-center" style="width:20%;">
+                                </div>
+                                <div class="col-2" style=" padding: 0;">
                                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                                     {
                                         @if (Model.UpARating != true)
                                         {
-                                            <input type="submit" name="button" class="button small" value="+" />
+                                            <input type="submit" name="button" class="button small" value="+" style="font-size: 1.4em; height: 1.75em; line-height: 1.75em; padding: 0;" />
                                         }
                                     }
-                                </td>
-                            </form>
-                        </tr>
-                    </table>*@
+                                </div>
+                            </div>
+                        </form>
+                        @*<table border="0" style="margin:0;">
+                    <tr>
+                        <td colspan="3" class="align-center" style="width:50%; padding:0;">
+                            @if (User.IsInRole("librarian") || User.IsInRole("admin"))
+                            {
+                                <a asp-action="Edit" asp-controller="Book" asp-route-id="@Model.Id" class="button small">Изменить</a>
+                            }
+                        </td>
+                        <td colspan="3" class="align-center" style="width:50%; padding:0;">
+                            @if (User.IsInRole("librarian") || User.IsInRole("admin"))
+                            {
+                                <a asp-action="Delete" asp-controller="Book" asp-route-id="@Model.Id" onclick="return confirm('Вы уверены, что хотите удалить книгу?')" class="button small">Удалить</a>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="align-center">
+                            @if (User.Identity != null && User.Identity.IsAuthenticated)
+                            {
+                                @if (Model.IsInFavorites)
+                                {
+                                    <a asp-action="DeleteFavourite" asp-controller="Profile" asp-route-id="@Model.Id" asp-route-isInProfile="false" class="button small">Убрать из избранного</a>
+                                }
+                                else
+                                {
+                                    <a asp-action="AddFavourite" asp-controller="Profile" asp-route-id="@Model.Id" class="button small">Добавить в избранное</a>
+                                }
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <form asp-action="Rating" asp-controller="Book" method="post">
+                            <input asp-for="Id" type="hidden">
+                            <td colspan="1" class="align-center" style="width:20%;">
+                                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                                {
+                                    @if (Model.UpARating != false)
+                                    {
+                                        <input type="submit" name="button" class="button small" value="-" />
+                                    }
+                                }
+                            </td>
+                            <td colspan="4" class="align-center" style="width:60%;">
+                                <label asp-for="Rating" style="display:inline;"></label>@Model.Rating
+                            </td>
+                            <td colspan="1" class="align-center" style="width:20%;">
+                                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                                {
+                                    @if (Model.UpARating != true)
+                                    {
+                                        <input type="submit" name="button" class="button small" value="+" />
+                                    }
+                                }
+                            </td>
+                        </form>
+                    </tr>
+                </table>*@
+                    </div>
                 </div>
-            <div class="col-6 off-3 ">
-                <label asp-for="Annotation" class="align-center"></label>
-                @Model.Annotation
-            </div>
-            @if (User.Identity != null && User.Identity.IsAuthenticated && Model.Bookmarks.Count != 0)
-            {
                 <div class="col-6 off-3 ">
-                    <table border="1" style="margin: 0 0 1em 0;">
-                        <thead>
-                            <tr>
-                                <td colspan="4" align="center"><h5 style="margin:0">Ваши закладки</h5></td>
-                            </tr>
-                            <tr>
-                                <td width="20%">
-                                </td>
-                                <td width="45%">
-                                    Имя закладки
-                                </td>
-                                <td width="15%">
-                                    Страница
-                                </td>
-                                <td width="20%">
-                                </td>
-                            </tr>
-                        </thead>
-                        @foreach (BookmarkViewModel bookmark in Model.Bookmarks)
-                        {
-                            @await Html.PartialAsync("~/Views/Shared/BookmarkPartial.cshtml", bookmark);
-                        }
-                        @if (!(User.IsInRole("premium") || User.IsInRole("librarian") || User.IsInRole("admin")))
-                        {
-                            <tfoot>
-                                <tr>
-                                    <td colspan="4" align="center"><h5 style="margin:0">Для того, чтобы иметь возможность добавлять неограниченное кол-во закладок для одной книги и давать закладками имена - приобретите Премиум!</h5><a>Перейти к покупке</a></td>
-                                </tr>
-                            </tfoot>
-                        }
-                    </table>
+                    <label asp-for="Annotation" class="align-center"></label>
+                    @Model.Annotation
                 </div>
-            }
+                @if (User.Identity != null && User.Identity.IsAuthenticated && Model.Bookmarks.Count != 0)
+                {
+                    <div class="col-6 off-3 ">
+                        <table border="1" style="margin: 0 0 1em 0;">
+                            <thead>
+                                <tr>
+                                    <td colspan="4" align="center"><h5 style="margin:0">Ваши закладки</h5></td>
+                                </tr>
+                                <tr>
+                                    <td width="20%">
+                                    </td>
+                                    <td width="45%">
+                                        Имя закладки
+                                    </td>
+                                    <td width="15%">
+                                        Страница
+                                    </td>
+                                    <td width="20%">
+                                    </td>
+                                </tr>
+                            </thead>
+                            @foreach (BookmarkViewModel bookmark in Model.Bookmarks)
+                            {
+                                @await Html.PartialAsync("~/Views/Shared/BookmarkPartial.cshtml", bookmark);
+                            }
+                            @if (!(User.IsInRole("premium") || User.IsInRole("librarian") || User.IsInRole("admin")))
+                            {
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="4" align="center"><h5 style="margin:0">Для того, чтобы иметь возможность добавлять неограниченное кол-во закладок для одной книги и давать закладками имена - приобретите Премиум!</h5><a>Перейти к покупке</a></td>
+                                    </tr>
+                                </tfoot>
+                            }
+                        </table>
+                    </div>
+                }
                 <div class="col-6 off-3 align-center">
                     <h1><a asp-action="Read" asp-controller="Book" asp-route-id="@Model.Id" asp-route-page="1" class="button fit">Читать</a></h1>
                 </div>
             </div>
         </div>
+    </div>
 </section>

@@ -2,16 +2,17 @@
 <section class="box">
     <div class="container col-8-medium">
         <div class="row aln-center">
-            <div style="background-color: #ffffff; padding:1em;  width:1000px;">
+            <div style="background-color: #ffffff; padding:1em; margin-bottom:1em; width:1000px;">
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-6">
                         <h5>Ваш текущий статус: @Model.Account.Status</h5>
+                        <h5 style="margin:0">Ваш почтовый адрес: @Model.Account.Email</h5>
                     </div>
+                    <div class="col-3 align-center aln-center" style="align-self: center;"><a class="button small" asp-action="ChangePassword" asp-controller="Account">Изменить пароль</a></div>
+                    <div class="col-3 align-center aln-center" style="align-self: center;"><a class="button small" asp-action="ChangePassword" asp-controller="Account">Изменить почту</a></div>
                 </div>
-                <div class="row">
-                    <div class="col-6"><h5>Ваш почтовый адрес: @Model.Account.Email</h5></div>
-                    <div class="col-3"><a class="button small" asp-action="ChangePassword" asp-controller="Account">Изменить пароль</a></div>
-                </div>
+            </div>
+            <div style="background-color: #ffffff; padding:1em;  width:1000px;">
                 <div class="row" style="margin-bottom: 1em; width:auto">
                     
                 </div>
