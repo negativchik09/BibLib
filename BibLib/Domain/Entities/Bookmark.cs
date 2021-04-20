@@ -12,5 +12,6 @@ namespace BibLib.Domain.Entities
         [ForeignKey("Books")]
         public int BookId { get; set; }
         public int Page { get; set; } 
+        public bool IsAvailable { get; set; }
     }
 }

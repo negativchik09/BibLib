@@ -14,7 +14,7 @@
             @if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 <li><a asp-action="Profile" asp-controller="Profile">Профиль</a></li>
-                <li><a asp-action="Favourites" asp-controller="Profile">Закладки</a></li>
+                <li><a asp-action="Bookmarks" asp-controller="Profile">Закладки</a></li>
                 <li><a asp-action="Logout" asp-controller="Account">Выйти из аккаунта</a></li>
             }
             else

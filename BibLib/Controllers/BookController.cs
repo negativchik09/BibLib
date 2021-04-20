@@ -209,13 +209,18 @@ namespace BibLib.Controllers
                 return View("BookInfo", model);
             }
             IdentityUser user = await _umr.FindByNameAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return View("BookInfo", model);
+            }
             model.Bookmarks = _ctx.Bookmarks
                 .Where(x => x.BookId == id && x.User == user)
                 .Select(bm => new BookmarkViewModel
                 {
                     BookId = id,
                     Page = bm.Page,
-                    Name = bm.Name
+                    Name = bm.Name,
+                    IsAvailable = bm.IsAvailable
                 }).ToList();
             model.IsInFavorites = _ctx.Favorites.Any(x => x.User == user && x.BookId == id);
             Mark mark = await _ctx.Marks.FirstOrDefaultAsync(x => x.User == user && x.BookId == id);

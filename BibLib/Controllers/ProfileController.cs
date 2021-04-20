@@ -89,7 +89,7 @@ namespace BibLib.Controllers
             return RedirectToRoute(new {controller = "Book", action = "Info", id = $"{id}"}); 
         }
         // ////////////////////////////////////////////
-        public async void AddBookmark(int id, int page, int font, string name = null)
+        public async Task<IActionResult> AddBookmark(int id, int page, int font, string name = null)
         {
             IdentityUser user = await _urm.FindByNameAsync(User.Identity?.Name);
             if (await _ctx.Favorites.AnyAsync(x => x.BookId == id && x.User == user) 
@@ -97,14 +97,44 @@ namespace BibLib.Controllers
                 || await _urm.IsInRoleAsync(user, Config.LibrarianRole) 
                 || await _urm.IsInRoleAsync(user, Config.PremiumRole))
             {
-                await _ctx.Bookmarks.AddAsync(new Bookmark{BookId = id, User = user, Name = name, Page = page});
+                await _ctx.Bookmarks.AddAsync(new Bookmark{BookId = id, User = user, Name = name, Page = page, IsAvailable = true});
             }
             else
             {
-                (await _ctx.Bookmarks.FirstAsync(x => x.BookId == id && x.User == user)).Page = page;
+                Bookmark mark = await _ctx.Bookmarks.FirstAsync(x => x.BookId == id && x.User == user);
+                mark.Page = page;
+                mark.IsAvailable = true;
             }
 
             await _ctx.SaveChangesAsync();
+
+            return Redirect($"~/Book/Read/1?page={page}&font={font}");
+        }
+
+        public async Task<IActionResult> Bookmarks()
+        {
+            IdentityUser user = await _urm.FindByNameAsync(User.Identity.Name);
+            List<Bookmark> list = _ctx.Bookmarks.Where(x => x.User == user).ToList();
+            AllBookmarksViewModel model = new AllBookmarksViewModel
+            {
+                List = new List<(string BookName, List<BookmarkViewModel> Bookmarks)>()
+            };
+            foreach (var Id in list.Select(x=>x.Id).Distinct())
+            {
+                model.List
+                    .Add(new ((await _ctx.Books.FirstOrDefaultAsync(x=> x.Id == Id)).Title,
+                        list.Where(x=>x.Id == Id)
+                        .Select(x => new BookmarkViewModel
+                        {
+                            BookId = x.Id,
+                            IsAvailable = x.IsAvailable,
+                            Name = x.Name,
+                            Page = x.Page
+                        })
+                        .ToList()
+                    ));
+            }
+            return View("Bookmarks", model);
         }
     }
 }
