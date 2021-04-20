@@ -17,6 +17,19 @@
             window.location.href = ('@Model.Id?page=' + gotoPageInput.value + '&font=' + document.getElementById('font-dropbox').value)
         }
     }
+
+    function openForm() {
+        if ("@User.IsInRole("premium")" == "True" || "@User.IsInRole("librarian")" == "True" || "@User.IsInRole("admin")" == "True") {
+            document.getElementById("add-bookmark").style.display = "block";
+        }
+        else {
+            document.getElementById("add-bookmark-form").submit();
+        }
+    }
+
+    function closeForm() {
+        document.getElementById("add-bookmark").style.display = "none";
+    }
 </script>
 
 <section class="box">
@@ -45,8 +58,23 @@
                         </select>
                     </div>
                     <div class="col-4">
-                        <input type="button" value="Добавить в закладки" style="width:100%">
+                        <input type="button" value="Добавить в закладки" style="width:100%" onclick='openForm()'>
                     </div>
+                </div>
+                <div class="row" id="add-bookmark" style="margin-bottom:0.5em">
+                    <form class="row" id="add-bookmark-form" asp-action="AddBookmark" asp-controller="Profile">
+                        <input type="hidden" asp-for="Id" name="id" />
+                        <input type="hidden" asp-for="Pages.PageNumber" name="id" />
+                        <div class="col-6">
+                            <input name="BookmarkName" placeholder="Введите имя закладки" class="align-center" style="width:100%; height:100%;"/>
+                        </div>
+                        <div class="col-3">
+                            <input type="submit" value="Добавить закладку" style="width:100%; height:100%;"/>
+                        </div>
+                        <div class="col-3">
+                            <input type="button" value="Отмена" onclick='closeForm()' id="cancel-button" style="width:100%; height:100%;"/>
+                        </div>
+                    </form>
                 </div>
                 <div class="row" style="margin-bottom:0.5em">
                     <div class="col-2">
