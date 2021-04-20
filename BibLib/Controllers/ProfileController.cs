@@ -62,8 +62,7 @@ namespace BibLib.Controllers
             }).ToList();
             return View("Profile", new ProfileViewModel {Account = account, Favorites = list});
         }
-
-        // ////////////////////////////////////////////
+        
         public async Task<IActionResult> AddFavourite(int id)
         {
             IdentityUser user = await _urm.FindByNameAsync(User.Identity?.Name);
@@ -92,7 +91,7 @@ namespace BibLib.Controllers
             }
             return RedirectToRoute(new {controller = "Book", action = "Info", id = $"{id}"}); 
         }
-        // ////////////////////////////////////////////
+        
         public async Task<IActionResult> AddBookmark(int id, int page, int font, string name = null)
         {
             IdentityUser user = await _urm.FindByNameAsync(User.Identity?.Name);
@@ -115,15 +114,17 @@ namespace BibLib.Controllers
             return Redirect($"~/Book/Read/1?page={page}&font={font}");
         }
 
-        public async Task<IActionResult> Bookmarks()
+        public async Task<IActionResult> Bookmarks(int page = 1)
         {
+            int _booksOnPage = 5;
             IdentityUser user = await _urm.FindByNameAsync(User.Identity.Name);
             List<Bookmark> list = _ctx.Bookmarks.Where(x => x.User == user).ToList();
             AllBookmarksViewModel model = new AllBookmarksViewModel
             {
                 List = new List<(string BookName, List<BookmarkViewModel> Bookmarks)>()
             };
-            foreach (var Id in list.Select(x=>x.Id).Distinct())
+            foreach (var Id in list.Select(x=>x.Id).Distinct().Skip((page - 1)*_booksOnPage)
+                .Take(_booksOnPage))
             {
                 model.List
                     .Add(new ((await _ctx.Books.FirstOrDefaultAsync(x=> x.Id == Id)).Title,
@@ -139,6 +140,9 @@ namespace BibLib.Controllers
                         .ToList()
                     ));
             }
+
+            model.Pages.PageNumber = page;
+            model.Pages.TotalPages = list.Select(x => x.Id).Distinct().Count();
             return View("Bookmarks", model);
         }
 
