@@ -126,12 +126,12 @@ namespace BibLib.Controllers
             return Redirect($"~/Book/Read/1?page={page}&font={font}");
         }
 
-        public async Task<IActionResult> Bookmarks(int page = 1, string search = null)
+        public async Task<IActionResult> Bookmarks(int page = 1, string search = "")
         {
             int _booksOnPage = 10;
             IdentityUser user = await _urm.FindByNameAsync(User.Identity.Name);
             List<Bookmark> list = _ctx.Bookmarks.Where(x => x.User == user).ToList();
-            if (search == null)
+            if (search == "")
             {
                 page = 1;
                 _booksOnPage = list.Select(x => x.Id).Distinct().Count();
@@ -149,7 +149,7 @@ namespace BibLib.Controllers
             {
                 model.List
                     .Add(new ((await _ctx.Books.FirstOrDefaultAsync(x=> x.Id == Id)).Title,
-                        list.Where(x=>x.BookId == Id && (search == null || x.Name.Contains(search)))
+                        list.Where(x=>x.BookId == Id && (search == "" || x.Name.Contains(search)))
                         .Select(x => new BookmarkViewModel
                         {
                             Id = x.Id,
