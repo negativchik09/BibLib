@@ -94,63 +94,6 @@
                                 </div>
                             </div>
                         </form>
-                        @*<table border="0" style="margin:0;">
-                    <tr>
-                        <td colspan="3" class="align-center" style="width:50%; padding:0;">
-                            @if (User.IsInRole("librarian") || User.IsInRole("admin"))
-                            {
-                                <a asp-action="Edit" asp-controller="Book" asp-route-id="@Model.Id" class="button small">Изменить</a>
-                            }
-                        </td>
-                        <td colspan="3" class="align-center" style="width:50%; padding:0;">
-                            @if (User.IsInRole("librarian") || User.IsInRole("admin"))
-                            {
-                                <a asp-action="Delete" asp-controller="Book" asp-route-id="@Model.Id" onclick="return confirm('Вы уверены, что хотите удалить книгу?')" class="button small">Удалить</a>
-                            }
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="6" class="align-center">
-                            @if (User.Identity != null && User.Identity.IsAuthenticated)
-                            {
-                                @if (Model.IsInFavorites)
-                                {
-                                    <a asp-action="DeleteFavourite" asp-controller="Profile" asp-route-id="@Model.Id" asp-route-isInProfile="false" class="button small">Убрать из избранного</a>
-                                }
-                                else
-                                {
-                                    <a asp-action="AddFavourite" asp-controller="Profile" asp-route-id="@Model.Id" class="button small">Добавить в избранное</a>
-                                }
-                            }
-                        </td>
-                    </tr>
-                    <tr>
-                        <form asp-action="Rating" asp-controller="Book" method="post">
-                            <input asp-for="Id" type="hidden">
-                            <td colspan="1" class="align-center" style="width:20%;">
-                                @if (User.Identity != null && User.Identity.IsAuthenticated)
-                                {
-                                    @if (Model.UpARating != false)
-                                    {
-                                        <input type="submit" name="button" class="button small" value="-" />
-                                    }
-                                }
-                            </td>
-                            <td colspan="4" class="align-center" style="width:60%;">
-                                <label asp-for="Rating" style="display:inline;"></label>@Model.Rating
-                            </td>
-                            <td colspan="1" class="align-center" style="width:20%;">
-                                @if (User.Identity != null && User.Identity.IsAuthenticated)
-                                {
-                                    @if (Model.UpARating != true)
-                                    {
-                                        <input type="submit" name="button" class="button small" value="+" />
-                                    }
-                                }
-                            </td>
-                        </form>
-                    </tr>
-                </table>*@
                     </div>
                 </div>
                 <div class="col-6 off-3 ">
