@@ -10,6 +10,7 @@ using BibLib.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using Microsoft.VisualBasic;
 
 namespace BibLib.Controllers
 {
@@ -124,21 +125,41 @@ namespace BibLib.Controllers
             {
                 books = books.Where(x => x.Title.Contains(model.TitleInput.Trim()));
             }
+
+            List<int> bookId;
+            List<string> InputSplit;
             // Author
             if (!string.IsNullOrEmpty(model.AuthorInput))
             {
-                var i = _ctx.AuthorBook.AsNoTracking().Where(x => _ctx.Authors.AsNoTracking()
-                        .Where(y=>y.Name.Contains(model.AuthorInput.Trim()))
-                        .Select(y=>y.Id)
-                        .Contains(x.AuthorId))
-                    .Select(x => x.BookId);
-                books = books.Where(x=>i.Contains(x.Id));
+                bookId = new List<int>();
+                InputSplit = new List<string>();
+                var i = model.AuthorInput.Split(", ", StringSplitOptions.RemoveEmptyEntries);
+                foreach (var str in i.Select(x=>x.Split(' ', StringSplitOptions.RemoveEmptyEntries)))
+                {
+                    InputSplit.AddRange(str);
+                }
+                foreach (var str in InputSplit)
+                {
+                     bookId.AddRange(_ctx.AuthorBook.AsNoTracking()
+                        .Where(x => _ctx.Authors.AsNoTracking()
+                            .Where(y=> y.Name.Contains(str))
+                            .Select(y=>y.Id)
+                            .Contains(x.AuthorId))
+                        .Select(x => x.BookId));
+                }
+                books = books.Where(x=>bookId.Contains(x.Id));
             }
             // Genre
             if (!string.IsNullOrEmpty(model.GenreInput))
             {
+                bookId = new List<int>();
+                InputSplit = new List<string>();
+                var i = model.GenreInput.Split(", ", StringSplitOptions.RemoveEmptyEntries);
+                foreach (var str in i.Select(x=>x.Split(' ', StringSplitOptions.RemoveEmptyEntries)))
+                {
+                    InputSplit.AddRange(str);
+                }
                 var j = _ctx.GenreBook.AsNoTracking().Where(x => _ctx.Genres.AsNoTracking()
-                        .Where(y=>y.Title.Contains(model.GenreInput.Trim()))
                         .Select(y=>y.Id)
                         .Contains(x.GenreId))
                     .Select(x => x.BookId);
@@ -170,6 +191,10 @@ namespace BibLib.Controllers
                 model.Pages = new PaginationViewModel();
             }
             model.Pages.TotalPages = (int)Math.Ceiling(books.Count() / (double)InOnePage);
+            if (model.Pages.TotalPages < 0)
+            {
+                model.Pages.TotalPages = 1;
+            }
             if (model.Pages.PageNumber < 1)
             {
                 model.Pages.PageNumber = 1;
