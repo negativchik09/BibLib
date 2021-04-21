@@ -9,12 +9,7 @@ using BibLib.Models;
 using BibLib.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Hosting;
-
-// Random element
-// Random rand = new Random();
-// el = _ctx.Books.OrderBy(r => Guid.NewGuid()).Skip(rand.Next(1, _ctx.Books.Count)).Take(1).FirstOrDefault();
 
 namespace BibLib.Controllers
 {
@@ -32,7 +27,64 @@ namespace BibLib.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            int numberOfMostPopular = 5; 
+            Random rand = new Random();
+            IndexPageViewModel model = new IndexPageViewModel
+            {
+                RandomBook = _ctx.Books
+                    .OrderBy(r => Guid.NewGuid())
+                    .Skip(rand.Next(1, _ctx.Books.Count()))
+                    .Take(1)
+                    .Select(book => new ShortBookViewModel
+                    {
+                        Id = book.Id,
+                        Title = book.Title,
+                        Annotation = book.Annotation,
+                        Author = _ctx.AuthorBook.AsNoTracking()
+                            .Where(x => x.BookId == book.Id)
+                            .Select(pair => _ctx.Authors.AsNoTracking()
+                                .FirstOrDefault(a => a.Id == pair.AuthorId))
+                            .ToList(),
+                        Genre = _ctx.GenreBook.AsNoTracking()
+                            .Where(x => x.BookId == book.Id)
+                            .Select(pair => _ctx.Genres.AsNoTracking()
+                                .FirstOrDefault(g => g.Id == pair.GenreId))
+                            .ToList(),
+                        Image =
+                            $"../../img/books/{book.Id}/{Path.GetFileName(Directory.GetFiles($"{img_path}{book.Id}")[0])}",
+                        NumberOfPages = book.NumberOfPages,
+                        Popularity = book.Popularity,
+                        Rating = book.Rating,
+                        Series = book.Series
+                    }).Single(),
+                MostPopularBooks = _ctx.Books
+                    .OrderByDescending(r => r.Popularity)
+                    .Take(numberOfMostPopular)
+                    .Select(book => new ShortBookViewModel
+                    {
+                        Id = book.Id,
+                        Title = book.Title,
+                        Annotation = book.Annotation,
+                        Author = _ctx.AuthorBook.AsNoTracking()
+                            .Where(x => x.BookId == book.Id)
+                            .Select(pair => _ctx.Authors.AsNoTracking()
+                                .FirstOrDefault(a => a.Id == pair.AuthorId))
+                            .ToList(),
+                        Genre = _ctx.GenreBook.AsNoTracking()
+                            .Where(x => x.BookId == book.Id)
+                            .Select(pair => _ctx.Genres.AsNoTracking()
+                                .FirstOrDefault(g => g.Id == pair.GenreId))
+                            .ToList(),
+                        Image =
+                            $"../../img/books/{book.Id}/{Path.GetFileName(Directory.GetFiles($"{img_path}{book.Id}")[0])}",
+                        NumberOfPages = book.NumberOfPages,
+                        Popularity = book.Popularity,
+                        Rating = book.Rating,
+                        Series = book.Series
+                    })
+                    .ToList()
+            };
+            return View("Index", model);
         }
 
         [HttpPost]
@@ -43,9 +95,9 @@ namespace BibLib.Controllers
                 GeneralSearch = queue
             });
         }
-
+        
         [HttpPost]
-        public async Task<IActionResult> Search(SearchViewModel model, int page = 1)
+        public async Task<IActionResult> Search(SearchViewModel model)
         {
             int InOnePage = 10;
             
@@ -103,9 +155,16 @@ namespace BibLib.Controllers
             
             // Pagination
             model.Pages.TotalPages = (int)Math.Ceiling(books.Count() / (double)InOnePage);
-            model.Pages.PageNumber = page;
+            if (model.Pages.PageNumber < 1)
+            {
+                model.Pages.PageNumber = 1;
+            }
+            else if (model.Pages.PageNumber > model.Pages.TotalPages)
+            {
+                model.Pages.PageNumber = model.Pages.TotalPages;
+            }
             model.List = books
-                .Skip((page - 1) * InOnePage)
+                .Skip((model.Pages.PageNumber - 1) * InOnePage)
                 .Take(InOnePage)
                 .Select(book=>new ShortBookViewModel
                 {
