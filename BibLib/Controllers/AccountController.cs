@@ -216,8 +216,14 @@ namespace BibLib.Controllers
             {
                 return RedirectToAction("Profile", "Profile");
             }
-
             return View("Premium", new PremiumViewModel());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Premium(PremiumViewModel model)
+        {
+            await _userManager.AddToRoleAsync(await _userManager.FindByNameAsync(User.Identity.Name), Config.PremiumRole);
+            return RedirectToAction("Index", "Home");
         }
     }
 }

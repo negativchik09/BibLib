@@ -4,7 +4,7 @@ namespace BibLib.Models.ViewModels
 {
     public static class PathDescriptorViewModel
     {
-        public static List<Anchor> Anchors(string path)
+        public static List<Anchor> Anchors(string[] path)
         {
             return null;
         }

@@ -1,1 +1,1 @@
-﻿@PathDescriptorViewModel.Anchors(@Context.Request.Path)
+﻿@PathDescriptorViewModel.Anchors(@Context.Request.Path.Value.Split('/', StringSplitOptions.RemoveEmptyEntries))
