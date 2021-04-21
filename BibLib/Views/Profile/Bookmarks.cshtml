@@ -1,4 +1,22 @@
 ﻿@model AllBookmarksViewModel
+<script>
+    function OnFirst() {
+        document.getElementById('pages-input').value = 1;
+        document.getElementById("pages-form").submit();
+    }
+    function OnPrevious() {
+        document.getElementById('pages-input').value = @(Model.Pages.PageNumber - 1);
+        document.getElementById("pages-form").submit();
+    }
+    function OnNext() {
+        document.getElementById('pages-input').value = @(Model.Pages.PageNumber + 1);
+        document.getElementById("pages-form").submit();
+    }
+    function OnLast() {
+        document.getElementById('pages-input').value = @(Model.Pages.TotalPages);
+        document.getElementById("pages-form").submit();
+    }
+</script>
 
 <section class="box">
     <div class="container col-6-medium">
@@ -28,33 +46,66 @@
                 {
                     if (!(corteage.Bookmarks.Count == 0))
                     {
-                    <div class="fa-border" style="margin: 0 0 1em 0; padding: 0.5em">
-                        <table style="margin: 0">
-                            <thead>
-                                <tr>
-                                    <td colspan="4" align="center"><h3 style="margin:0">Книга: @corteage.BookName</h3></td>
-                                </tr>
-                                <tr>
-                                    <td width="20%">
-                                    </td>
-                                    <td width="45%">
-                                        Имя закладки
-                                    </td>
-                                    <td width="15%">
-                                        Страница
-                                    </td>
-                                    <td width="20%">
-                                    </td>
-                                </tr>
-                            </thead>
-                            @foreach (BookmarkViewModel bookmark in corteage.Bookmarks)
-                            {
-                                @await Html.PartialAsync("~/Views/Shared/BookmarkPartial.cshtml", bookmark);
-                            }
-                        </table>
-                    </div>
+                        <div class="fa-border" style="margin: 0 0 1em 0; padding: 0.5em">
+                            <table style="margin: 0">
+                                <thead>
+                                    <tr>
+                                        <td colspan="4" align="center"><h3 style="margin:0">Книга: @corteage.BookName</h3></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="20%">
+                                        </td>
+                                        <td width="45%">
+                                            Имя закладки
+                                        </td>
+                                        <td width="15%">
+                                            Страница
+                                        </td>
+                                        <td width="20%">
+                                        </td>
+                                    </tr>
+                                </thead>
+                                @foreach (BookmarkViewModel bookmark in corteage.Bookmarks)
+                                {
+                                    @await Html.PartialAsync("~/Views/Shared/BookmarkPartial.cshtml", bookmark);
+                                }
+                            </table>
+                        </div>
                     }
                 }
+                <form asp-controller="Profile" asp-action="Profile" asp-route-page="@Model.Pages.PageNumber" method="get" id="pages-form" style="margin:0">
+                    <input type="hidden" asp-for="Pages.PageNumber" id="pages-input" />
+                    <div class="row">
+                        <div class="col-2">
+                            @if (Model.Pages.HasPreviousPage)
+                            {
+                                <input type="button" class="small" value="На первую" onclick='OnFirst()' />
+                            }
+                        </div>
+                        <div class="col-2">
+                            @if (Model.Pages.HasPreviousPage)
+                            {
+                                <input type="button" class="small" value="Предыдущая" onclick='OnPrevious()' />
+                            }
+                        </div>
+                        <div class="col-4">
+
+                        </div>
+                        <div class="col-2">
+                            @if (Model.Pages.HasNextPage)
+                            {
+                                <input type="button" class="small" value="Следующая" onclick='OnNext()' />
+                            }
+
+                        </div>
+                        <div class="col-2">
+                            @if (Model.Pages.HasNextPage)
+                            {
+                                <input type="button" class="small" value="На последнюю" onclick='OnLast()' />
+                            }
+                        </div>
+                    </div>
+                </form>
             </div>
             </div>
         </div>

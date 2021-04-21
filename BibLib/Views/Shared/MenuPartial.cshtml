@@ -14,28 +14,22 @@
     <div class="menu-secondary-links" style="display:none">
         <a class="button" asp-action="Search" asp-controller="Home">Каталог</a>
     </div>
-    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    @if (User.IsInRole("premium") || User.IsInRole("librarian") || User.IsInRole("admin"))
     {
-        <div><a class="button" asp-action="Profile" asp-controller="Profile">Профиль</a></div>
-        <div><a class="button" asp-action="Bookmarks" asp-controller="Profile">Закладки</a></div>
-        <div><a class="button" asp-action="Logout" asp-controller="Account" style="white-space: nowrap;">Выйти из аккаунта</a></div>
-        <div><a class="button" asp-action="Premium" asp-controller="Account" style="white-space: nowrap;">Приобрести премиум</a></div>
+    <div><a class="button" asp-action="Profile" asp-controller="Profile">Профиль</a></div>
+    <div><a class="button" asp-action="Bookmarks" asp-controller="Profile">Закладки</a></div>
+    <div><a class="button" asp-action="Logout" asp-controller="Account" style="white-space: nowrap;">Выйти из аккаунта</a></div>
     }
-    else if (User.IsInRole("premium"))
+    else if (User.Identity != null && User.Identity.IsAuthenticated)
     {
-        <div><a class="button" asp-action="Profile" asp-controller="Profile">Профиль</a></div>
-        <div><a class="button" asp-action="Bookmarks" asp-controller="Profile">Закладки</a></div>
-        <div><a class="button" asp-action="Logout" asp-controller="Account" style="white-space: nowrap;">Выйти из аккаунта</a></div>
-    }
-    else if (User.IsInRole("librarian") || User.IsInRole("admin"))
-    {
-        <div><a class="button" asp-action="Profile" asp-controller="Profile">Профиль</a></div>
-        <div><a class="button" asp-action="Bookmarks" asp-controller="Profile">Закладки</a></div>
-        <div><a class="button" asp-action="Logout" asp-controller="Account" style="white-space: nowrap;">Выйти из аккаунта</a></div>
+    <div><a class="button" asp-action="Profile" asp-controller="Profile">Профиль</a></div>
+    <div><a class="button" asp-action="Bookmarks" asp-controller="Profile">Закладки</a></div>
+    <div><a class="button" asp-action="Logout" asp-controller="Account" style="white-space: nowrap;">Выйти из аккаунта</a></div>
+    <div><a class="button" asp-action="Premium" asp-controller="Account" style="white-space: nowrap;">Приобрести премиум</a></div>
     }
     else
     {
-        <div><a class="button" asp-action="Login" asp-controller="Account" style="white-space: nowrap;">Войти в аккаунт</a></div>
-        <div><a class="button" asp-action="Registration" asp-controller="Account">Зарегистрироваться</a></div>
+    <div><a class="button" asp-action="Login" asp-controller="Account" style="white-space: nowrap;">Войти в аккаунт</a></div>
+    <div><a class="button" asp-action="Registration" asp-controller="Account">Зарегистрироваться</a></div>
     }
 </section>

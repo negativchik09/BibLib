@@ -33,8 +33,11 @@
                             <div class="col-3 align-center aln-center" style="align-self: center;"><a class="button small" asp-action="ChangePassword" asp-controller="Account">Изменить пароль</a></div>
                             <div class="col-3 align-center aln-center" style="align-self: center;"><a class="button small" asp-action="Create" asp-controller="Book">Добавить книгу</a></div>
                         }
-                        <div class="col-3 align-center aln-center" style="align-self: center;"></div>
-                        <div class="col-3 align-center aln-center" style="align-self: center;"><a class="button small" asp-action="ChangePassword" asp-controller="Account">Изменить пароль</a></div>
+                        else
+                        {
+                            <div class="col-3 align-center aln-center" style="align-self: center;"></div>
+                            <div class="col-3 align-center aln-center" style="align-self: center;"><a class="button small" asp-action="ChangePassword" asp-controller="Account">Изменить пароль</a></div>
+                        }
                     </div>
                 </div>
                 <div style="background-color: #ffffff; padding:1em;  width:1000px;">
