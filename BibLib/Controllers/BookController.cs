@@ -289,7 +289,7 @@ namespace BibLib.Controllers
                 book.Rating++;
             }
             await _ctx.SaveChangesAsync();
-            return await Info(id);
+            return Redirect($"~/Book/Info/{id}");
         }
         
         // Delete

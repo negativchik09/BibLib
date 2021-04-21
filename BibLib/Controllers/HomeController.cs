@@ -114,10 +114,10 @@ namespace BibLib.Controllers
         {
             int InOnePage = 10;
             
-            model.SeriesDataSet ??= _ctx.Books.AsNoTracking().Select(x => x.Series).OrderBy().ToList();
-            model.AuthorDataSet ??= _ctx.Authors.AsNoTracking().Select(x => x.Name).OrderBy().ToList();
-            model.GenreDataSet ??= _ctx.Genres.AsNoTracking().Select(x => x.Title).OrderBy().ToList();
-            model.TitleDataSet ??= _ctx.Books.AsNoTracking().Select(x => x.Title).OrderBy().ToList();
+            model.SeriesDataSet ??= _ctx.Books.AsNoTracking().Select(x => x.Series).OrderBy(x => x).ToList();
+            model.AuthorDataSet ??= _ctx.Authors.AsNoTracking().Select(x => x.Name).OrderBy(x => x).ToList();
+            model.GenreDataSet ??= _ctx.Genres.AsNoTracking().Select(x => x.Title).OrderBy(x => x).ToList();
+            model.TitleDataSet ??= _ctx.Books.AsNoTracking().Select(x => x.Title).OrderBy(x => x).ToList();
             
             // Filtration
             IQueryable<BookDTO> books = await GeneralSearch(model.GeneralSearch);
