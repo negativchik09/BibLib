@@ -88,7 +88,7 @@ namespace BibLib.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Search(string queue)
+        public async Task<IActionResult> SearchQueue(string queue)
         {
             return await Search(new SearchViewModel
             {
@@ -101,7 +101,18 @@ namespace BibLib.Controllers
         {
             int InOnePage = 10;
             
-            model.SeriesDataSet ??= _ctx.Books.AsNoTracking().Select(x => x.Series[..(x.Series.LastIndexOf('-') - 1)]).Distinct().ToList();
+            model.SeriesDataSet ??= _ctx.Books.AsNoTracking().Select(x => x.Series).ToList();
+            for (int i = 0; i < model.SeriesDataSet.Count; i++)
+            {
+                if (model.SeriesDataSet.Contains("-"))
+                {
+                    model.SeriesDataSet[i] = model.SeriesDataSet[i]
+                        .Substring(0,
+                            model.SeriesDataSet[i].LastIndexOf('-') - 1)
+                        .Trim();
+                }
+            }
+            model.SeriesDataSet = model.SeriesDataSet.Distinct().ToList();
             model.AuthorDataSet ??= _ctx.Authors.AsNoTracking().Select(x => x.Name).ToList();
             model.GenreDataSet ??= _ctx.Genres.AsNoTracking().Select(x => x.Title).ToList();
             model.TitleDataSet ??= _ctx.Books.AsNoTracking().Select(x => x.Title).ToList();
@@ -109,12 +120,12 @@ namespace BibLib.Controllers
             // Filtration
             IQueryable<BookDTO> books = await GeneralSearch(model.GeneralSearch);
             // Title
-            if (!string.IsNullOrEmpty(model.TitleInput.Trim()))
+            if (!string.IsNullOrEmpty(model.TitleInput))
             {
                 books = books.Where(x => x.Title.Contains(model.TitleInput.Trim()));
             }
             // Author
-            if (!string.IsNullOrEmpty(model.AuthorInput.Trim()))
+            if (!string.IsNullOrEmpty(model.AuthorInput))
             {
                 var i = _ctx.AuthorBook.AsNoTracking().Where(x => _ctx.Authors.AsNoTracking()
                         .Where(y=>y.Name.Contains(model.AuthorInput.Trim()))
@@ -124,7 +135,7 @@ namespace BibLib.Controllers
                 books = books.Where(x=>i.Contains(x.Id));
             }
             // Genre
-            if (!string.IsNullOrEmpty(model.GenreInput.Trim()))
+            if (!string.IsNullOrEmpty(model.GenreInput))
             {
                 var j = _ctx.GenreBook.AsNoTracking().Where(x => _ctx.Genres.AsNoTracking()
                         .Where(y=>y.Title.Contains(model.GenreInput.Trim()))
@@ -134,7 +145,7 @@ namespace BibLib.Controllers
                 books = books.Where(x => j.Contains(x.Id));
             }
             // Series
-            if (!string.IsNullOrEmpty(model.SeriesInput.Trim()))
+            if (!string.IsNullOrEmpty(model.SeriesInput))
             {
                 books = books.Where(x => x.Series.Contains(model.SeriesInput.Trim()));
             }
@@ -154,6 +165,10 @@ namespace BibLib.Controllers
             };
             
             // Pagination
+            if (model.Pages == null)
+            {
+                model.Pages = new PaginationViewModel();
+            }
             model.Pages.TotalPages = (int)Math.Ceiling(books.Count() / (double)InOnePage);
             if (model.Pages.PageNumber < 1)
             {
