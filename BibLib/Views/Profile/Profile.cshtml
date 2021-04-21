@@ -45,7 +45,7 @@
                     {
                         @await Html.PartialAsync("~/Views/Shared/ShortBookPartial.cshtml", book);
                     }
-                    <form asp-controller="Profile" asp-action="Profile" id="pages-form" style="margin:0">
+                    <form asp-controller="Profile" asp-action="Profile" asp-route-page="@Model.Pages.PageNumber" method="get" id="pages-form" style="margin:0">
                         <input type="hidden" asp-for="Pages.PageNumber" id="pages-input" />
                         <div class="row">
                             <div class="col-2">

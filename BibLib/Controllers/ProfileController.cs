@@ -28,9 +28,15 @@ namespace BibLib.Controllers
             _urm = urm;
             img_path = @$"{host.ContentRootPath.Replace('\\', '/')}/wwwroot/img/books/";
         }
-        public async Task<IActionResult> Profile(int page = 1)
+        [HttpGet]
+        public async Task<IActionResult> Profile(ProfileViewModel model = null)
         {
             int _booksOnPage = 10;
+            int page = 1;
+            if (model != null && model.Pages != null)
+            {
+                 page = model.Pages.PageNumber;                
+            }
             IdentityUser user = await _urm.FindByEmailAsync(User.Identity?.Name);
             List<string> roles = new List<string>(await _urm.GetRolesAsync(user));
             AccountInformationViewModel account = new AccountInformationViewModel

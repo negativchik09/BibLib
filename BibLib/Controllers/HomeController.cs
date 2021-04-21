@@ -89,11 +89,11 @@ namespace BibLib.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SearchQueue(string queue)
+        public async Task<IActionResult> SearchQuery(string query)
         {
             return await Search(new SearchViewModel
             {
-                GeneralSearch = queue
+                GeneralSearch = query
             });
         }
         
