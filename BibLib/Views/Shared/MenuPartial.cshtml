@@ -1,47 +1,41 @@
-<section id="menu">
-
-<!-- Search -->
-    <section>
-        <form class="search" method="get" action="#">
-            <input type="text" name="query" placeholder="Search" />
-        </form>
-    </section>
-
-<!-- Links -->
-    <section>
-        <ul class="links">
-            <li>
-                <a href="#">
-                    <h3>Lorem ipsum</h3>
-                    <p>Feugiat tempus veroeros dolor</p>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <h3>Dolor sit amet</h3>
-                    <p>Sed vitae justo condimentum</p>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <h3>Feugiat veroeros</h3>
-                    <p>Phasellus sed ultricies mi congue</p>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <h3>Etiam sed consequat</h3>
-                    <p>Porta lectus amet ultricies</p>
-                </a>
-            </li>
-        </ul>
-    </section>
-
-<!-- Actions -->
-    <section>
-        <ul class="actions stacked">
-            <li><a href="#" class="button large fit">Log In</a></li>
-        </ul>
-    </section>
-
+﻿<section id="menu">
+    <div class="menu-secondary-links" style="width:-webkit-fill-available; display:none;">
+        <div class="row">
+            <div class="col-9">
+                <form class="search" method="post" id="searchbar" asp-action="SearchQueue" asp-controller="Home" style="margin:0">
+                    <input type="text" name="query" placeholder="Поиск" />
+                </form>
+            </div>
+            <div class="col-3">
+                <input type="button" value="Искать" onclick='document.getElementById("searchbar").submit();' style="height:100%; width:100%; line-height:initial;" />
+            </div>
+        </div>
+    </div>
+    <div class="menu-secondary-links" style="display:none">
+        <a class="button" asp-action="Search" asp-controller="Home">Каталог</a>
+    </div>
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        <div><a class="button" asp-action="Profile" asp-controller="Profile">Профиль</a></div>
+        <div><a class="button" asp-action="Bookmarks" asp-controller="Profile">Закладки</a></div>
+        <div><a class="button" asp-action="Logout" asp-controller="Account" style="white-space: nowrap;">Выйти из аккаунта</a></div>
+        <div><a class="button" asp-action="Premium" asp-controller="Account" style="white-space: nowrap;">Приобрести премиум</a></div>
+    }
+    else if (User.IsInRole("premium"))
+    {
+        <div><a class="button" asp-action="Profile" asp-controller="Profile">Профиль</a></div>
+        <div><a class="button" asp-action="Bookmarks" asp-controller="Profile">Закладки</a></div>
+        <div><a class="button" asp-action="Logout" asp-controller="Account" style="white-space: nowrap;">Выйти из аккаунта</a></div>
+    }
+    else if (User.IsInRole("librarian") || User.IsInRole("admin"))
+    {
+        <div><a class="button" asp-action="Profile" asp-controller="Profile">Профиль</a></div>
+        <div><a class="button" asp-action="Bookmarks" asp-controller="Profile">Закладки</a></div>
+        <div><a class="button" asp-action="Logout" asp-controller="Account" style="white-space: nowrap;">Выйти из аккаунта</a></div>
+    }
+    else
+    {
+        <div><a class="button" asp-action="Login" asp-controller="Account" style="white-space: nowrap;">Войти в аккаунт</a></div>
+        <div><a class="button" asp-action="Registration" asp-controller="Account">Зарегистрироваться</a></div>
+    }
 </section>

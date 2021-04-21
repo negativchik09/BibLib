@@ -1,1 +1,30 @@
-﻿<h1>Привет мир</h1>
+﻿@model IndexPageViewModel
+
+<section class="box">
+    <div class="container col-8-medium">
+        <div class="row gtr-uniform aln-center">
+            <div style="width: 1000px;">
+                <div style="background-color: #ffffff; padding:1em; margin-bottom:1em;">
+                    <div class="row" style="text-align:center">
+                        <h3>Приветствуем Вас на главной странице электронной библиотеки BibLib!</h3>
+                    </div>
+                </div>
+                <div style="background-color: #ffffff; padding:1em; margin-bottom:1em;">
+                    <div class="row aln-center">
+                        <h3>Случайная книга</h3>
+                    </div>
+                    @await Html.PartialAsync("~/Views/Shared/ShortBookPartial.cshtml", Model.RandomBook)
+                </div>
+                <div style="background-color: #ffffff; padding:1em; margin-bottom:1em;">
+                    <div class="row aln-center">
+                        <h3>Наиболее популярные книги</h3>
+                    </div>
+                    @foreach (ShortBookViewModel book in Model.MostPopularBooks)
+                    {
+                        @await Html.PartialAsync("~/Views/Shared/ShortBookPartial.cshtml", book);
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

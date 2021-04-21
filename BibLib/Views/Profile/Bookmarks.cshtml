@@ -14,8 +14,15 @@
                         </div>
                     </div>
                 </form>
-                <div class="row aln-center aln-middle">
-                    <h1>Ваши закладки</h1>
+                <div class="row">
+                    <div class="col-12" style="text-align:center;">
+                        <h1>Ваши закладки</h1>
+                        @if (!(User.IsInRole("premium") || User.IsInRole("librarian") || User.IsInRole("admin")))
+                        {
+                            <h5 style="margin:0">Для того, чтобы иметь возможность добавлять неограниченное кол-во закладок для одной книги и давать закладками имена - приобретите Премиум!</h5>
+                            <h4><a asp-controller="Account" asp-action="Premium">Перейти к покупке</a></h4>
+                        }
+                    </div>
                 </div>
                 @foreach ((string BookName, List<BookmarkViewModel> Bookmarks) corteage in Model.List)
                 {
@@ -43,14 +50,6 @@
                             @foreach (BookmarkViewModel bookmark in corteage.Bookmarks)
                             {
                                 @await Html.PartialAsync("~/Views/Shared/BookmarkPartial.cshtml", bookmark);
-                            }
-                            @if (!(User.IsInRole("premium") || User.IsInRole("librarian") || User.IsInRole("admin")))
-                            {
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="4" align="center"><h5 style="margin:0">Для того, чтобы иметь возможность добавлять неограниченное кол-во закладок для одной книги и давать закладками имена - приобретите Премиум! <a asp-controller="Account" asp-action="Premium">Перейти к покупке</a></h5></td>
-                                    </tr>
-                                </tfoot>
                             }
                         </table>
                     </div>

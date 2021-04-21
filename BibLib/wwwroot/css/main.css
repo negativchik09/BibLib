@@ -3329,12 +3329,19 @@ input, select, textarea {
 				padding: 0 0.5em 0 0;
 			}
 
-		@media screen and (max-width: 980px) {
+		@media screen and (max-width: 1440px) {
 
 			#header .links {
-				display: none;
+				display: none !important;
 			}
 
+			#header .menu {
+				display: block !important;
+			}
+
+			#header #primary-links{
+				display: inherit !important; 
+			}
 		}
 
 		@media screen and (max-width: 736px) {
@@ -3348,10 +3355,24 @@ input, select, textarea {
 					padding: 0 0 0 1em;
 				}
 
-				#header .main .search {
-					display: none;
+				#header #primary-links {
+					display: none !important;
 				}
 
+				#header #search {
+					display: none !important;
+				}
+
+				#header .menu {
+					display: block !important;
+					margin-top: 0px !important;
+					height: 100% !important;
+					line-height: 4em !important;
+					width: 7em;
+				}
+			#menu .menu-secondary-links {
+				display: inherit !important;
+			}
 		}
 
 #container {
@@ -3596,9 +3617,14 @@ input, select, textarea {
 	}
 
 		#menu > * {
-			border-top: solid 1px rgba(160, 160, 160, 0.3);
-			padding: 3em;
+			/*border-top: solid 1px rgba(160, 160, 160, 0.3);*/
+			padding: 1em;
+			
 		}
+			
+			#menu div .button {
+				width: 100%;
+			}
 
 			#menu > * > :last-child {
 				margin-bottom: 0;
@@ -3613,19 +3639,22 @@ input, select, textarea {
 			padding: 0;
 		}
 
-			#menu .links > li {
+			#menu .links > li,
+			#menu li {
 				border: 0;
 				border-top: dotted 1px rgba(160, 160, 160, 0.3);
 				margin: 1.5em 0 0 0;
 				padding: 1.5em 0 0 0;
 			}
 
-				#menu .links > li a {
+				#menu .links > li a,
+				#menu li a {
 					display: block;
 					border-bottom: 0;
 				}
 
-					#menu .links > li a h3 {
+					#menu .links > li a h3,
+					#menu li a h3 {
 						-moz-transition: color 0.2s ease;
 						-webkit-transition: color 0.2s ease;
 						-ms-transition: color 0.2s ease;
@@ -3664,7 +3693,7 @@ input, select, textarea {
 		@media screen and (max-width: 736px) {
 
 			#menu > * {
-				padding: 1.5em;
+				padding: 0.5em;
 			}
 		}
 

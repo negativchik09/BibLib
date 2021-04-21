@@ -1,27 +1,67 @@
 <!-- Header -->
 <header id="header">
-    <a asp-action="Index" asp-controller="Home">
+    <a asp-action="Index" asp-controller="Home" style="display: inline-flex;">
         <img src="~/img/logo.png" />
+        <h1>BibLib</h1>
     </a>
-    <h1><a asp-action="Index" asp-controller="Home">BibLib</a></h1>
-    <nav class="links">
+    <nav class="links" style="display:inherit">
         <ul>
-            <li>
-                <form class="search" method="post" asp-action="SearchQueue" asp-controller="Home">
-                    <input type="text" name="query" placeholder="Search" />
+            <li><a @*asp-action="Search" asp-controller="Home"*@ style="margin-left:-8px"onclick='document.getElementById("searchbar").value = "";document.getElementById("searchbar").submit();'>Каталог</a></li>
+        </ul>
+        <ul style="width:-webkit-fill-available">
+            <li style="display:inline-flex; width:-webkit-fill-available">
+                <form class="search" method="post" id="searchbar" asp-action="SearchQueue" asp-controller="Home" style="margin-right:1em">
+                    <input type="text" name="query" placeholder="Поиск" />
                 </form>
+                <input type="button" value="Искать" onclick='document.getElementById("searchbar").submit();' style="height:3.6em; line-height:initial; margin-top:8px" />
             </li>
+        </ul>
+        <ul>
             @if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 <li><a asp-action="Profile" asp-controller="Profile">Профиль</a></li>
                 <li><a asp-action="Bookmarks" asp-controller="Profile">Закладки</a></li>
-                <li><a asp-action="Logout" asp-controller="Account">Выйти из аккаунта</a></li>
+                <li><a asp-action="Logout" asp-controller="Account" style="white-space: nowrap;">Выйти из аккаунта</a></li>
+                <li><a asp-action="Premium" asp-controller="Account" style="white-space: nowrap;">Приобрести премиум</a></li>
+            }
+            else if (User.IsInRole("premium"))
+            {
+                <li><a asp-action="Profile" asp-controller="Profile">Профиль</a></li>
+                <li><a asp-action="Bookmarks" asp-controller="Profile">Закладки</a></li>
+                <li><a asp-action="Logout" asp-controller="Account" style="white-space: nowrap;">Выйти из аккаунта</a></li>
+            }
+            else if (User.IsInRole("librarian") || User.IsInRole("admin"))
+            {
+                <li><a asp-action="Profile" asp-controller="Profile">Профиль</a></li>
+                <li><a asp-action="Bookmarks" asp-controller="Profile">Закладки</a></li>
+                <li><a asp-action="Logout" asp-controller="Account" style="white-space: nowrap;">Выйти из аккаунта</a></li>
             }
             else
             {
-                <li><a asp-action="Login" asp-controller="Account">Войти в аккаунт</a></li>
+                <li><a asp-action="Login" asp-controller="Account" style="white-space: nowrap;">Войти в аккаунт</a></li>
                 <li><a asp-action="Registration" asp-controller="Account">Зарегистрироваться</a></li>
             }
         </ul>
     </nav>
+    <nav class="links" id="primary-links" style="display:none">
+        <ul>
+            <li><a asp-action="Search" asp-controller="Home">Каталог</a></li>
+        </ul>
+        <ul style="width:-webkit-fill-available">
+            <li style="display:inline-flex; width:-webkit-fill-available">
+                <form class="search" method="post" id="searchbar" asp-action="SearchQueue" asp-controller="Home" style="margin-right:1em">
+                    <input type="text" name="query" placeholder="Поиск" />
+                </form>
+                <input type="button" value="Искать" onclick='document.getElementById("searchbar").submit();' style="height:3.6em; line-height:initial; margin-top:8px" />
+            </li>
+        </ul>
+    </nav>
+    <a class="menu button" href="#menu" 
+        style="display: none;
+        height: 3.6em;
+        line-height: 3.6em;
+        margin-top: 8px;
+        padding: 0 0.5em 0 0.5em;
+        margin-right: 1em;">
+    Меню</a>
 </header>

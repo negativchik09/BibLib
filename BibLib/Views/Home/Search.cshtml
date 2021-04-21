@@ -1,1 +1,106 @@
 ﻿@model SearchViewModel
+<script>
+    function OnFirst() {
+        document.getElementById('search-pages-input').value = 1;
+        document.getElementById('search-form').submit();
+    }
+    function OnPrevious() {
+        document.getElementById("search-pages-input").value = @(Model.Pages.PageNumber - 1);
+        document.getElementById('search-form').submit();
+    }
+    function OnNext() {
+        document.getElementById("search-pages-input").value = @(Model.Pages.PageNumber + 1);
+        document.getElementById("search-form").submit();
+    }
+    function OnLast() {
+        document.getElementById('search-pages-input').value = @(Model.Pages.TotalPages);
+        document.getElementById('search-form').submit();
+    }
+</script>
+
+<section class="box">
+    <div class="container col-6-medium">
+        <div class="row gtr-uniform aln-center">
+            <div style="width:1000px;">
+                <div style="background-color: #ffffff; padding:1em; margin:0 0 1em 0;">
+                    <form asp-controller="Home" asp-action="Search" id="search-form" style="margin:0">
+                        <input type="hidden" asp-for="Pages.PageNumber" id="search-pages-input"/>
+                        <div class="row" style="padding:0.25em">
+                            <div class="col-12">
+                                <input type="text" asp-for="GeneralSearch" placeholder="Поиск по любой категории" />
+                            </div>
+                        </div>
+                        <div class="row" style="padding:0.25em">
+                            <div class="col-4">
+                                <input list="" asp-for="TitleInput" type="text" placeholder="Название" />
+                            </div>
+                            <div class="col-4">
+                                <input type="text" asp-for="AuthorInput" placeholder="Автор" />
+                            </div>
+                            <div class="col-4">
+                                <select asp-for="SortingMethod" asp-items="Html.GetEnumSelectList<SortStates>()"></select>
+                            </div>
+                        </div>
+                        <div class="row" style="padding:0.25em">
+                            <div class="col-4">
+                                <input type="text" asp-for="GenreInput" placeholder="Жанр" />
+                            </div>
+                            <div class="col-4">
+                                <input type="text" asp-for="SeriesInput" placeholder="Серия" />
+                            </div>
+                            <div class="col-4">
+                                <input type="submit" class="button small" style="height: 100%" value="Искать"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div style="background-color: #ffffff; padding:1em; margin:0 0 1em 0;">
+                    @*<div class="row" style="margin-bottom: 1em; width:auto">
+
+                    </div>*@
+                    <div class="row aln-center">
+                        <h3>Результаты</h3>
+                    </div>
+                    @if (Model.List.Count == 0)
+                    {
+                        <h5>К сожалению, результатов нет</h5>
+                    }
+                    @foreach (ShortBookViewModel book in Model.List)
+                    {
+                        @await Html.PartialAsync("~/Views/Shared/ShortBookPartial.cshtml", book);
+                    }
+                    <div class="row">
+                        <div class="col-2">
+                            @if (Model.Pages.HasPreviousPage)
+                            {
+                                <input type="button" class="small" value="На первую" onclick='OnFirst()' />
+                            }
+                        </div>
+                        <div class="col-2">
+                            @if (Model.Pages.HasPreviousPage)
+                            {
+                                <input type="button" class="small" value="Предыдущая" onclick='OnPrevious()' />
+                            }
+                        </div>
+                        <div class="col-4">
+
+                        </div>
+                        <div class="col-2">
+                            @if (Model.Pages.HasNextPage)
+                            {
+                                <input type="button" class="small" value="Следующая" onclick='OnNext()' />
+                            }
+
+                        </div>
+                        <div class="col-2">
+                            @if (Model.Pages.HasNextPage)
+                            {
+                                <input type="button" class="small" value="На последнюю" onclick='OnLast()' />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
