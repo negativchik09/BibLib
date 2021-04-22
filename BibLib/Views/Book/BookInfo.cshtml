@@ -18,10 +18,10 @@
                                     {
                                         if (i == @Model.Author.Count - 1)
                                         {
-                                            <a href="~/Home/Search?authors=@Model.Author[i].Id">@Model.Author[i].Name</a>
+                                            <a href="~/Home/SearchParam?author=@Model.Author[i].Id">@Model.Author[i].Name</a>
                                             break;
                                         }
-                                        <a href="~/Home/Search?authors=@Model.Author[i].Id">@Model.Author[i].Name</a><strong>, </strong>
+                                        <a href="~/Home/SearchParam?author=@Model.Author[i].Id">@Model.Author[i].Name</a><strong>, </strong>
                                     }
                                 </td>
                             </tr>
@@ -32,10 +32,10 @@
                                     {
                                         if (i == @Model.Genre.Count - 1)
                                         {
-                                            <a href="~/Home/Search?authors=@Model.Genre[i].Id">@Model.Genre[i].Title</a>
+                                            <a href="~/Home/SearchParam?genre=@Model.Genre[i].Id">@Model.Genre[i].Title</a>
                                             break;
                                         }
-                                        <a href="~/Home/Search?authors=@Model.Genre[i].Id">@Model.Genre[i].Title</a><strong>, </strong>
+                                        <a href="~/Home/SearchParam?genre=@Model.Genre[i].Id">@Model.Genre[i].Title</a><strong>, </strong>
                                     }
                                 </td>
                             </tr>

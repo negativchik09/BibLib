@@ -7,6 +7,7 @@ using BibLib.Domain;
 using BibLib.Domain.Entities;
 using BibLib.Models;
 using BibLib.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
@@ -14,6 +15,7 @@ using Microsoft.VisualBasic;
 
 namespace BibLib.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         private readonly AppDbContext _ctx;
@@ -96,27 +98,26 @@ namespace BibLib.Controllers
                 GeneralSearch = query
             });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> SearchParam(int genre = -1, int author = -1)
+        {
+            return await Search(new SearchViewModel
+                {
+                    GenreInput = (await _ctx.Genres.FirstOrDefaultAsync(x => x.Id == genre))?.Title,
+                    AuthorInput = (await _ctx.Authors.FirstOrDefaultAsync(x => x.Id == author))?.Name
+                });
+        }
         
         [HttpPost]
         public async Task<IActionResult> Search(SearchViewModel model)
         {
             int InOnePage = 10;
             
-            model.SeriesDataSet ??= _ctx.Books.AsNoTracking().Select(x => x.Series).ToList();
-            for (int i = 0; i < model.SeriesDataSet.Count; i++)
-            {
-                if (model.SeriesDataSet.Contains("-"))
-                {
-                    model.SeriesDataSet[i] = model.SeriesDataSet[i]
-                        .Substring(0,
-                            model.SeriesDataSet[i].LastIndexOf('-') - 1)
-                        .Trim();
-                }
-            }
-            model.SeriesDataSet = model.SeriesDataSet.Distinct().ToList();
-            model.AuthorDataSet ??= _ctx.Authors.AsNoTracking().Select(x => x.Name).ToList();
-            model.GenreDataSet ??= _ctx.Genres.AsNoTracking().Select(x => x.Title).ToList();
-            model.TitleDataSet ??= _ctx.Books.AsNoTracking().Select(x => x.Title).ToList();
+            model.SeriesDataSet ??= _ctx.Books.AsNoTracking().Select(x => x.Series).OrderBy(x => x).ToList();
+            model.AuthorDataSet ??= _ctx.Authors.AsNoTracking().Select(x => x.Name).OrderBy(x => x).ToList();
+            model.GenreDataSet ??= _ctx.Genres.AsNoTracking().Select(x => x.Title).OrderBy(x => x).ToList();
+            model.TitleDataSet ??= _ctx.Books.AsNoTracking().Select(x => x.Title).OrderBy(x => x).ToList();
             
             // Filtration
             IQueryable<BookDTO> books = await GeneralSearch(model.GeneralSearch);
@@ -152,14 +153,8 @@ namespace BibLib.Controllers
             // Genre
             if (!string.IsNullOrEmpty(model.GenreInput))
             {
-                bookId = new List<int>();
-                InputSplit = new List<string>();
-                var i = model.GenreInput.Split(", ", StringSplitOptions.RemoveEmptyEntries);
-                foreach (var str in i.Select(x=>x.Split(' ', StringSplitOptions.RemoveEmptyEntries)))
-                {
-                    InputSplit.AddRange(str);
-                }
                 var j = _ctx.GenreBook.AsNoTracking().Where(x => _ctx.Genres.AsNoTracking()
+                        .Where(y=>y.Title.Contains(model.GenreInput.Trim()))
                         .Select(y=>y.Id)
                         .Contains(x.GenreId))
                     .Select(x => x.BookId);
@@ -191,7 +186,7 @@ namespace BibLib.Controllers
                 model.Pages = new PaginationViewModel();
             }
             model.Pages.TotalPages = (int)Math.Ceiling(books.Count() / (double)InOnePage);
-            if (model.Pages.TotalPages < 0)
+            if (model.Pages.TotalPages < 1)
             {
                 model.Pages.TotalPages = 1;
             }
@@ -230,7 +225,7 @@ namespace BibLib.Controllers
                 .ToList();
             return View("Search", model);
         }
-        
+
         private async Task<IQueryable<BookDTO>> GeneralSearch(string queue)
         {
             IQueryable<BookDTO> books = _ctx.Books.AsNoTracking();
