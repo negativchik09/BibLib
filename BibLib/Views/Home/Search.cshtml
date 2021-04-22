@@ -32,10 +32,22 @@
                         </div>
                         <div class="row" style="padding:0.25em">
                             <div class="col-4">
-                                <input list="" asp-for="TitleInput" type="text" placeholder="Название" />
+                                <input list="title-datalist" asp-for="TitleInput" type="text" placeholder="Название" />
+                                <datalist id="title-datalist">
+                                    @foreach (string title in Model.TitleDataSet)
+                                    {
+                                        <option>@title</option>
+                                    }
+                                </datalist>
                             </div>
                             <div class="col-4">
-                                <input type="text" asp-for="AuthorInput" placeholder="Автор" />
+                                <input list="author-datalist" type="text" asp-for="AuthorInput" placeholder="Автор" />
+                                <datalist id="author-datalist">
+                                    @foreach (string author in Model.AuthorDataSet)
+                                    {
+                                        <option>@author</option>
+                                    }
+                                </datalist>
                             </div>
                             <div class="col-4">
                                 <select asp-for="SortingMethod" asp-items="Html.GetEnumSelectList<SortStates>()"></select>
@@ -43,10 +55,22 @@
                         </div>
                         <div class="row" style="padding:0.25em">
                             <div class="col-4">
-                                <input type="text" asp-for="GenreInput" placeholder="Жанр" />
+                                <input list="genre-datalist" type="text" asp-for="GenreInput" placeholder="Жанр" />
+                                <datalist id="genre-datalist">
+                                    @foreach (string genre in Model.GenreDataSet)
+                                    {
+                                        <option>@genre</option>
+                                    }
+                                </datalist>
                             </div>
                             <div class="col-4">
-                                <input type="text" asp-for="SeriesInput" placeholder="Серия" />
+                                <input list="series-datalist" type="text" asp-for="SeriesInput" placeholder="Серия" />
+                                <datalist id="series-datalist">
+                                    @foreach (string series in Model.SeriesDataSet.Where(x => x != null && x.Contains(" - ")).Select(x => x[0..(x.Length - 4)].Trim()).Distinct())
+                                    {
+                                        <option>@series</option>
+                                    }
+                                </datalist>
                             </div>
                             <div class="col-4">
                                 <input type="submit" class="button small" style="height: 100%" value="Искать"/>
@@ -63,7 +87,9 @@
                     </div>
                     @if (Model.List.Count == 0)
                     {
+                    <div style="text-align:center">
                         <h5>К сожалению, результатов нет</h5>
+                    </div>
                     }
                     @foreach (ShortBookViewModel book in Model.List)
                     {
