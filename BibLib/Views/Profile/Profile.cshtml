@@ -19,70 +19,57 @@
 </script>
 
 <section class="box">
-    <div class="container col-8-medium">
-        <div class="row aln-center gtr-uniform">
-            <div style="width:1000px">
-                <div style="background-color: #ffffff; padding:1em; margin-bottom:1em; width:1000px;">
-                    <div class="row">
-                        <div class="col-6">
-                            <h5>Ваш текущий статус: @Model.Account.Status</h5>
-                            <h5 style="margin:0">Ваш почтовый адрес: @Model.Account.Email</h5>
-                        </div>
-                        @if (User.IsInRole("admin") || User.IsInRole("librarian"))
-                        {
-                            <div class="col-3 align-center aln-center" style="align-self: center;"><a class="button small" asp-action="ChangePassword" asp-controller="Account">Изменить пароль</a></div>
-                            <div class="col-3 align-center aln-center" style="align-self: center;"><a class="button small" asp-action="Create" asp-controller="Book">Добавить книгу</a></div>
-                        }
-                        else
-                        {
-                            <div class="col-3 align-center aln-center" style="align-self: center;"></div>
-                            <div class="col-3 align-center aln-center" style="align-self: center;"><a class="button small" asp-action="ChangePassword" asp-controller="Account">Изменить пароль</a></div>
-                        }
-                    </div>
+    <div class="row aln-center gtr-uniform">
+        <div class="col-8 col-12-medium" style="background-color: #ffffff; padding:1em; margin-bottom:1em;">
+            <div class="row">
+                <div class="col-8">
+                    <h5>Ваш текущий статус: @Model.Account.Status</h5>
+                    <h5 style="margin:0">Ваш почтовый адрес: @Model.Account.Email</h5>
                 </div>
-                <div style="background-color: #ffffff; padding:1em;  width:1000px;">
-                    <div class="row aln-center">
-                        <h3>Избранное</h3>
-                    </div>
-                    @foreach (ShortBookViewModel book in Model.Favorites)
-                    {
-                        @await Html.PartialAsync("~/Views/Shared/ShortBookPartial.cshtml", book);
-                    }
-                    <form asp-controller="Profile" asp-action="Profile" asp-route-page="@Model.Pages.PageNumber" method="get" id="pages-form" style="margin:0">
-                        <input type="hidden" asp-for="Pages.PageNumber" id="pages-input" />
-                        <div class="row">
-                            <div class="col-2">
-                                @if (Model.Pages.HasPreviousPage)
-                                {
-                                    <input type="button" class="small" value="На первую" onclick='OnFirst()' />
-                                }
-                            </div>
-                            <div class="col-2">
-                                @if (Model.Pages.HasPreviousPage)
-                                {
-                                    <input type="button" class="small" value="Предыдущая" onclick='OnPrevious()' />
-                                }
-                            </div>
-                            <div class="col-4">
-
-                            </div>
-                            <div class="col-2">
-                                @if (Model.Pages.HasNextPage)
-                                {
-                                    <input type="button" class="small" value="Следующая" onclick='OnNext()' />
-                                }
-
-                            </div>
-                            <div class="col-2">
-                                @if (Model.Pages.HasNextPage)
-                                {
-                                    <input type="button" class="small" value="На последнюю" onclick='OnLast()' />
-                                }
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                <div class="col-4" style="align-self: center;"><a class="button small" asp-action="ChangePassword" asp-controller="Account">Изменить пароль</a></div>
             </div>
+        </div>
+        <div class="col-8 col-12-medium" style="background-color: #ffffff; padding:1em;">
+            <div class="row aln-center">
+                <h3>Избранное</h3>
+            </div>
+            @foreach (ShortBookViewModel book in Model.Favorites)
+            {
+                @await Html.PartialAsync("~/Views/Shared/ShortBookPartial.cshtml", book);
+            }
+            <form asp-controller="Profile" asp-action="Profile" asp-route-page="@Model.Pages.PageNumber" method="get" id="pages-form" style="margin:0">
+                <input type="hidden" asp-for="Pages.PageNumber" id="pages-input" />
+                <div class="row">
+                    <div class="col-2">
+                        @if (Model.Pages.HasPreviousPage)
+                        {
+                            <input type="button" class="small" value="На первую" onclick='OnFirst()' />
+                        }
+                    </div>
+                    <div class="col-2">
+                        @if (Model.Pages.HasPreviousPage)
+                        {
+                            <input type="button" class="small" value="Предыдущая" onclick='OnPrevious()' />
+                        }
+                    </div>
+                    <div class="col-4">
+
+                    </div>
+                    <div class="col-2">
+                        @if (Model.Pages.HasNextPage)
+                        {
+                            <input type="button" class="small" value="Следующая" onclick='OnNext()' />
+                        }
+
+                    </div>
+                    <div class="col-2">
+                        @if (Model.Pages.HasNextPage)
+                        {
+                            <input type="button" class="small" value="На последнюю" onclick='OnLast()' />
+                        }
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </section>

@@ -250,7 +250,7 @@ namespace BibLib.Controllers
             IdentityUser user = await _umr.FindByNameAsync(User.Identity?.Name);
             if (user == null)
             {
-                return View("AccessDenied");
+                return RedirectToAction("Login", "Account");
             }
             if (button == "-")
             {

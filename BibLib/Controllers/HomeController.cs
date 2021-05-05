@@ -91,9 +91,9 @@ namespace BibLib.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SearchQuery(string query)
+        public IActionResult SearchQuery(string query)
         {
-            return await Search(new SearchViewModel
+            return Search(new SearchViewModel
             {
                 GeneralSearch = query
             });
@@ -102,7 +102,7 @@ namespace BibLib.Controllers
         [HttpGet]
         public async Task<IActionResult> SearchParam(int genre = -1, int author = -1)
         {
-            return await Search(new SearchViewModel
+            return Search(new SearchViewModel
                 {
                     GenreInput = (await _ctx.Genres.FirstOrDefaultAsync(x => x.Id == genre))?.Title,
                     AuthorInput = (await _ctx.Authors.FirstOrDefaultAsync(x => x.Id == author))?.Name
@@ -110,7 +110,7 @@ namespace BibLib.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> Search(SearchViewModel model)
+        public IActionResult Search(SearchViewModel model)
         {
             int InOnePage = 10;
             
@@ -120,7 +120,7 @@ namespace BibLib.Controllers
             model.TitleDataSet ??= _ctx.Books.AsNoTracking().Select(x => x.Title).OrderBy(x => x).ToList();
             
             // Filtration
-            IQueryable<BookDTO> books = await GeneralSearch(model.GeneralSearch);
+            IQueryable<BookDTO> books = GeneralSearch(model.GeneralSearch);
             // Title
             if (!string.IsNullOrEmpty(model.TitleInput))
             {
@@ -226,7 +226,7 @@ namespace BibLib.Controllers
             return View("Search", model);
         }
 
-        private async Task<IQueryable<BookDTO>> GeneralSearch(string queue)
+        private IQueryable<BookDTO> GeneralSearch(string queue)
         {
             IQueryable<BookDTO> books = _ctx.Books.AsNoTracking();
             if (string.IsNullOrEmpty(queue)) return books;

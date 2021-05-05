@@ -3,19 +3,19 @@
     <form asp-action="SecurityCheck" asp-controller="Account" method="post">
         <div class="container col-6-medium">
             <div class="row gtr-uniform">
-                <div class="col-6 off-3">
+                <div class="col-6 off-3 col-10-medium off-1-medium">
                     <input asp-for="Email" type="hidden"/>
                 </div>
-                <div class="col-6 off-3">
+                <div class="col-6 off-3 col-10-medium off-1-medium">
                     <label asp-for="Question" class="align-center"></label>
                     <input asp-for="Question" class="align-center" readonly="readonly"/>
                 </div>
-                <div class="col-6 off-3">
+                <div class="col-6 off-3 col-10-medium off-1-medium">
                     <label asp-for="Answer" class="align-center"></label>
                     <input asp-for="Answer" class="align-center"/>
                     <span asp-validation-for="Answer" class="align-center"></span>
                 </div>
-                <div class="col-4 off-4 aln-center">
+                <div class="col-4 off-4 aln-center col-10-medium off-1-medium">
                     <input type="submit" value="Отправить" class="button special fit"/>
                 </div>
             </div>

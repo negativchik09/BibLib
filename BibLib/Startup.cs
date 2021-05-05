@@ -45,19 +45,11 @@ namespace BibLib
                 options.Cookie.Name = "AlphaStoreCookie";
                 options.Cookie.HttpOnly = true;
                 options.LoginPath = "/Account/Login";
-                options.AccessDeniedPath = "/Shared/AccessDenied";
+                options.AccessDeniedPath = "/Account/AccessDenied";
                 options.SlidingExpiration = true;
             });
-            // Setup policy of authorization for Admin area
-            services.AddAuthorization(x =>
-            {
-                x.AddPolicy("AdminArea", policy => policy.RequireRole("admin"));
-            });
             // Adding support of controllers and views
-            services.AddControllersWithViews(x =>
-                {
-                    x.Conventions.Add(new AdminAreaAuthorization("Admin", "AdminArea"));
-                })
+            services.AddControllersWithViews()
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
         }
 
@@ -72,7 +64,6 @@ namespace BibLib
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute("admin", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
         }

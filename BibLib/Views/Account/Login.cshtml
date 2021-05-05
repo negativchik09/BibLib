@@ -3,24 +3,24 @@
     <form asp-action="Login" asp-controller="Account" method="post">
         <div class="container col-6-medium">
             <div class="row gtr-uniform">
-                <div class="col-3 off-3">
+                <div class="col-3 off-3 col-10-medium off-1-medium">
                     <label asp-for="Email" class="align-center"></label>
                     <input asp-for="Email" class="align-center" />
                     <span asp-validation-for="Email" class="align-center"></span>
                 </div>
-                <div class="col-3">
+                <div class="col-3 col-10-medium off-1-medium">
                     <label asp-for="Password" class="align-center"></label>
                     <input asp-for="Password" type="password" class="align-center" />
                     <span asp-validation-for="Password" class="align-center"></span>
                 </div>
-                <div class="col-4 off-3 ">
+                <div class="col-4 off-3 col-10-medium off-1-medium">
                     <input type="checkbox" asp-for="RememberMe" class="align-center" />
                     <label asp-for="RememberMe" class="align-center" style="user-select:none"></label>
                 </div>
-                <div class="col-2">
+                <div class="col-2 col-10-medium off-1-medium">
                     <a asp-action="ForgotPassword" asp-controller="Account">Забыл пароль</a>
                 </div>
-                <div class="col-4 off-4 aln-center">
+                <div class="col-4 off-4 aln-center col-10-medium off-1-medium">
                     <input type="submit" value="Авторизоваться" class="button special fit" />
                 </div>
             </div>

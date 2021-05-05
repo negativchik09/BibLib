@@ -81,7 +81,7 @@
                     <div class="col-2">
                         @if (Model.Pages.HasPreviousPage)
                         {
-                            <input type="button" value="НАЗАД <" style="width:100%" onclick="window.location.href = ('@Model.Id?page=@(Model.Pages.PageNumber - 1)' + '&font=' + document.getElementById('font-dropbox').value)">
+                            <input type="button" value="НАЗАД &#60;" style="width:100%" onclick="window.location.href = ('@Model.Id?page=@(Model.Pages.PageNumber - 1)' + '&font=' + document.getElementById('font-dropbox').value)">
                         }
                     </div>
                     <div class="col-8 aln-center" style="align-self: center; text-align: center;">
@@ -110,48 +110,47 @@
                         {
                             <input type="button" value="&gt; ВПЕРЁД" style="width:100%" onclick="window.location.href = ('@Model.Id?page=@(Model.Pages.PageNumber + 1)' + '&font=' + document.getElementById('font-dropbox').value)">
                         }
-                    </div>
-                </div>
-                <div id="page-body" style="font-size:@(Model.FontSize+"pt")">
-                    @foreach (string paragraph in Model.Text.Split("\r\n", StringSplitOptions.RemoveEmptyEntries))
+                    </div></div>
+            </div>
+            <div id="page-body" style="font-size:@(Model.FontSize+"pt")">
+                @foreach (string paragraph in Model.Text.Split("\r\n", StringSplitOptions.RemoveEmptyEntries))
+                {
+                    <p class="text-fragment">@paragraph</p>
+                }
+            </div>
+            <div class="row" style="margin-bottom:0.5em">
+                <div class="col-2">
+                    @if (Model.Pages.HasPreviousPage)
                     {
-                        <p class="text-fragment">@paragraph</p>
+                        <input type="button" value="НАЗАД &#60;" style="width:100%" onclick="window.location.href = ('@Model.Id?page=@(Model.Pages.PageNumber - 1)' + '&font=' + document.getElementById('font-dropbox').value)">
                     }
                 </div>
-                <div class="row" style="margin-bottom:0.5em">
-                    <div class="col-2">
-                        @if (Model.Pages.HasPreviousPage)
+                <div class="col-8 aln-center" style="align-self: center; text-align: center;">
+                    <div style="align-self: center; text-align: center;">
+                        <a href="~/Book/Read/@Model.Id?page=1" class="page-number">1</a>
+                        @if (Model.Pages.PageNumber > 2)
                         {
-                            <input type="button" value="НАЗАД <" style="width:100%" onclick="window.location.href = ('@Model.Id?page=@(Model.Pages.PageNumber - 1)' + '&font=' + document.getElementById('font-dropbox').value)">
+                            <strong>...</strong>
+                        }
+                        @for (int i = Model.Pages.PageNumber - 2; (i < Model.Pages.PageNumber + 3) && (i <= Model.Pages.TotalPages); i++)
+                        {
+                            if ((i > 1) && (i <= Model.Pages.TotalPages))
+                            {
+                                <a href="~/Book/Read/@Model.Id?page=@i" class="page-number">@i</a>
+                            }
+                        }
+                        @if (Model.Pages.PageNumber < Model.Pages.TotalPages - 2)
+                        {
+                            <strong>...</strong>
+                            <a href="~/Book/Read/@Model.Id?page=@Model.Pages.TotalPages" class="page-number">@Model.Pages.TotalPages</a>
                         }
                     </div>
-                    <div class="col-8 aln-center" style="align-self: center; text-align: center;">
-                        <div style="align-self: center; text-align: center;">
-                            <a href="~/Book/Read/@Model.Id?page=1" class="page-number">1</a>
-                            @if (Model.Pages.PageNumber > 2)
-                            {
-                                <strong>...</strong>
-                            }
-                            @for (int i = Model.Pages.PageNumber - 2; (i < Model.Pages.PageNumber + 3) && (i <= Model.Pages.TotalPages); i++)
-                            {
-                                if ((i > 1) && (i <= Model.Pages.TotalPages))
-                                {
-                                    <a href="~/Book/Read/@Model.Id?page=@i" class="page-number">@i</a>
-                                }
-                            }
-                            @if (Model.Pages.PageNumber < Model.Pages.TotalPages - 2)
-                            {
-                                <strong>...</strong>
-                                <a href="~/Book/Read/@Model.Id?page=@Model.Pages.TotalPages" class="page-number">@Model.Pages.TotalPages</a>
-                            }
-                        </div>
-                    </div>
-                    <div class="col-2">
-                        @if (Model.Pages.HasNextPage)
-                        {
-                            <input type="button" value="> ВПЕРЁД" style="width:100%" onclick="window.location.href = ('@Model.Id?page=@(Model.Pages.PageNumber + 1)' + '&font=' + document.getElementById('font-dropbox').value)">
-                        }
-                    </div>
+                </div>
+                <div class="col-2">
+                    @if (Model.Pages.HasNextPage)
+                    {
+                        <input type="button" value="&gt; ВПЕРЁД" style="width:100%" onclick="window.location.href = ('@Model.Id?page=@(Model.Pages.PageNumber + 1)' + '&font=' + document.getElementById('font-dropbox').value)">
+                    }
                 </div>
             </div>
         </div>
