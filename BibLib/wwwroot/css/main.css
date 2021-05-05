@@ -43,6 +43,12 @@ ol, ul {
 	list-style: none;
 }
 
+blockquote{
+	padding-top:0;
+	padding-bottom:0;
+	margin-bottom:1em;
+}
+
 blockquote, q {
 	quotes: none;
 }
@@ -259,8 +265,8 @@ input, select, textarea {
 	blockquote {
 		border-left: solid 4px rgba(160, 160, 160, 0.3);
 		font-style: italic;
-		margin: 0 0 2em 0;
-		padding: 0.5em 0 0.5em 2em;
+		margin: 0 0 1em 0;
+		padding: 0 0 0 2em;
 	}
 
 	code {
@@ -2391,6 +2397,7 @@ input, select, textarea {
 
 	ul {
 		list-style: disc;
+		list-style-position: inside;
 		margin: 0 0 2em 0;
 		padding-left: 1em;
 	}
