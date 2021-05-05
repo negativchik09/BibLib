@@ -246,5 +246,10 @@ namespace BibLib.Controllers
                 x.Series.Contains(queue) || x.Title.Contains(queue) || i.Contains(x.Id) || j.Contains(x.Id));
             return books;
         }
+
+        public IActionResult Help()
+        {
+            return View();
+        }
     }
 }

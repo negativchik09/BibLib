@@ -108,7 +108,7 @@
                     <div class="col-2">
                         @if (Model.Pages.HasNextPage)
                         {
-                            <input type="button" value="> ВПЕРЁД" style="width:100%" onclick="window.location.href = ('@Model.Id?page=@(Model.Pages.PageNumber + 1)' + '&font=' + document.getElementById('font-dropbox').value)">
+                            <input type="button" value="&gt; ВПЕРЁД" style="width:100%" onclick="window.location.href = ('@Model.Id?page=@(Model.Pages.PageNumber + 1)' + '&font=' + document.getElementById('font-dropbox').value)">
                         }
                     </div>
                 </div>
