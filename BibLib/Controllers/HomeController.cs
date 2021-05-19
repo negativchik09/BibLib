@@ -90,6 +90,12 @@ namespace BibLib.Controllers
             return View("Index", model);
         }
 
+        [HttpGet]
+        public IActionResult Catalog()
+        {
+            return Search(new SearchViewModel());
+        }
+
         [HttpPost]
         public IActionResult SearchQuery(string query)
         {

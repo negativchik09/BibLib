@@ -23,13 +23,19 @@
         <div class="row gtr-uniform aln-center">
             <div style="background-color: #ffffff; padding:1em;  width:1000px;">
                 <form asp-action="Bookmarks" asp-controller="Profile">
-                    <div class="row">
-                        <div class="col-8">
-                            <input name="search" placeholder="Введите имя закладки" class="align-center" style="width:100%; height:100%;" />
+                    <div class="row gtr-uniform">
+                        <div class="col-8 col-10-medium off-1-medium">
+                            <input name="search" placeholder="Введите имя закладки" class="align-center" style="width:100%; height:100%;"/>
                         </div>
-                        <div class="col-4">
-                            <input type="submit" class="button small" value="Найти закладку" />
+                        <div class="col-4 col-10-medium off-1-medium">
+                            <input type="submit" class="button small" value="Найти закладку"/>
                         </div>
+                        @if (Model.Search)
+                        {
+                            <div class="col-12">
+                                <a asp-action="Bookmarks" asp-controller="Profile" class="button small" id="cancel-button" style="padding: 2px">Сбросить поиск</a>
+                            </div>
+                        }
                     </div>
                 </form>
                 <div class="row">
