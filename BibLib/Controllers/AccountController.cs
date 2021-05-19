@@ -168,7 +168,7 @@ namespace BibLib.Controllers
                     var questionAnswer = await _ctx.SecretQuestions.AsNoTracking().FirstOrDefaultAsync(x => x.User == user);
                     if (questionAnswer?.Answer == model.Answer)
                     {
-                        return ChangePassword(model.Email);
+                        return ChangePassword(new ChangePasswordViewModel() {Email = model.Email}).Result;
                     }
                 }
                 ModelState.AddModelError(nameof(model.Email), "Пользователь с такой почтой не найден");
@@ -183,10 +183,10 @@ namespace BibLib.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [NonAction]
-        public IActionResult ChangePassword(string email)
+        [HttpGet]
+        public IActionResult ChangePassword()
         {
-            return View("ChangePassword", new ChangePasswordViewModel {Email = email});
+            return View("ChangePassword", new ChangePasswordViewModel {Email = User.Identity.Name});
         }
         
         [HttpPost]
@@ -222,7 +222,6 @@ namespace BibLib.Controllers
         [HttpPost]
         public async Task<IActionResult> Premium(PremiumViewModel model)
         {
-            await _userManager.AddToRoleAsync(await _userManager.FindByNameAsync(User.Identity.Name), Config.PremiumRole);
             return RedirectToAction("Index", "Home");
         }
     }

@@ -93,7 +93,7 @@ namespace BibLib.Controllers
         [HttpGet]
         public IActionResult Catalog()
         {
-            return Search(new SearchViewModel());
+            return Search(new SearchViewModel() {GeneralSearch = ""});
         }
 
         [HttpPost]
